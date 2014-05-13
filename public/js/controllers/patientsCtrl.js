@@ -3,6 +3,12 @@
 angular.module('clinuip')
     .controller('PatientsCtrl', function PatientsCtrl($scope, Patients) {
 
+        var tokens = [
+            "H65.1","K65.0","A54.9","A56.2","B95.5","B97.7","D13.5","D13.9","E11.3",
+            "E11.7","G11.1","G11.8","G40.3","G40.9","H30.2","H31.4","H34.2","K55.1",
+            "K56.1","L20.8","Order: EKG","Medication: 1 tablet"
+        ];
+
         $scope.chosenGender = null;
         $scope.selectedPatient = null;
         $scope.patients = [];
@@ -107,7 +113,12 @@ angular.module('clinuip')
 
         $scope.addDetails = function () {
             var htmlForm = $(".form-add-details").clone().show(),
-                tags = htmlForm.find("#tokenfield").tokenfield();
+                tags = htmlForm.find("#tokenfield").tokenfield({
+                    autocomplete: {
+                        source: tokens,
+                        delay: 100
+                    }
+                });
 
             showModal(htmlForm, "Add patient details", function () {
                 var items = [];
@@ -129,7 +140,12 @@ angular.module('clinuip')
         $scope.editDetails = function (id) {
             var htmlForm = $(".form-add-details").clone().show(),
                 item = _.findWhere($scope.details, {_id: id}),
-                tags = htmlForm.find("#tokenfield").val(item.details.join(', ')).tokenfield();
+                tags = htmlForm.find("#tokenfield").val(item.details.join(', ')).tokenfield({
+                    autocomplete: {
+                        source: tokens,
+                        delay: 100
+                    }
+                });
 
             showModal(htmlForm, "Edit patient details", function () {
                 var items = [];
