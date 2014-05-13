@@ -1,0 +1,27 @@
+{
+    "name": "clinuip",
+    "version": "0.1.0",
+    "description": "Simple medical application.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "underscore": "1.6.0",
+        "express": "^4.0.0",
+        "body-parser": "1.0.2",
+        "mongoose": "3.8.9"
+
+    },
+    "engines": {
+        "node": "0.10.x"
+    },
+    "author": "Sanel Deljkic <dsanel@gmail.com>",
+    "contributors": [
+        {
+            "name": "Sanel Deljkic",
+            "email": "dsanel@gmail.com"
+        }
+    ],
+    "license": "MIT"
+}

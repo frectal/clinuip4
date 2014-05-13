@@ -1,0 +1,3 @@
+<section>
+    Home Page
+</section>

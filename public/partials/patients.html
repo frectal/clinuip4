@@ -1,0 +1,101 @@
+<section>
+    <div class="row">
+        <div class="col-sm-5 col-md-3">
+            <blockquote>
+                <p>Male/Female Patients</p>
+            </blockquote>
+            <div id="chartContainer" style="height: 200px"></div>
+        </div>
+        <div class="col-sm-7 col-md-4">
+            <blockquote>
+                <p>Patients<b>{{ chosenGender ? ': ' + chosenGender : '' }}</b></p>
+            </blockquote>
+            <div ng-show="chosenGender">
+                <input ng-model="patientFilter" type="text" class="form-control" placeholder="filter" style="margin-bottom: 5px">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Name</th>
+                        <th style="width: 100px;">Test 1</th>
+                        <th style="width: 20px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="cursor: pointer" ng-repeat="patient in patients track by $id($index)" ng-click="showDetails(patient._id, patient.name)">
+                            <td>{{ patient.no }}</td>
+                            <td>{{ patient.name }}</td>
+                            <td>{{ patient.test1 }}</td>
+                            <td><i class="fa fa-pencil-square-o" ng-click="editPatient(patient._id); $event.stopPropagation();"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary pull-right" ng-click="addPatient()">Add Patient</button>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-5">
+            <blockquote>
+                <p>Patients Details<b>{{ selectedPatient ? ': ' + selectedPatient.name : '' }}</b></p>
+            </blockquote>
+            <div ng-show="selectedPatient">
+                <input ng-model="detailFilter" type="text" class="form-control" placeholder="filter" style="margin-bottom: 5px">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th>Data</th>
+                            <th style="width: 20px;"></th>
+                            <th style="width: 20px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="detail in details">
+                            <td>{{ detail.no }}</td>
+                            <td>{{ detail.details.join(', ') }}</td>
+                            <td><i class="fa fa-pencil-square-o" ng-click="editDetails(detail._id)"></i></td>
+                            <td><i class="fa fa-times" ng-click="deleteDetails(detail._id)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary pull-right" ng-click="addDetails()">Add Patient Data</button>
+            </div>
+        </div>
+    </div>
+    <!-- HTML Form for adding new patient -->
+    <form class="form-horizontal form-add-patient" role="form" style="display: none">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label" required>Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="name" placeholder="Full name" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="test1" class="col-sm-2 control-label">Test 1</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="test1" placeholder="Test Data 1">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="test2" class="col-sm-2 control-label">Test 2</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="test2" placeholder="Test Data 2">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="test3" class="col-sm-2 control-label">Test 3</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="test3" placeholder="Test Data 3">
+            </div>
+        </div>
+    </form>
+    <!-- HTML Form for adding new patient details -->
+    <form class="form-horizontal form-add-details" role="form" style="display: none">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label" required>Details</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="tokenfield" />                               
+            </div>
+        </div>
+    </form>
+
+</section>
