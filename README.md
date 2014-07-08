@@ -3,7 +3,7 @@ ClineUiP 2
 
 Folder and file structure:
 
-<code>
+```sh
   .
   ├── app                          // Node.js server side code
   │   ├── controllers
@@ -32,4 +32,4 @@ Folder and file structure:
   │       └── patients.html        // HTML code for 'patient' page
   └── README.md
 
-  </code>
+```
