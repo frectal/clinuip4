@@ -25,11 +25,11 @@ Folder and file structure:
   │   │   │   └── patientsCtrl.js  // Frontend code for 'patients' page
   │   │   ├── lib                  // Custom JS libs (jquery, angular, bootstrap...)
   │   │   └── services
-  │   │       └── patients.js      // Frontend service to comunicate with server
+  │   │       └── patients.js      // Frontend service to communicate with server
   │   └── partials
-  │       ├── header.html          // Navihation HTML
+  │       ├── header.html          // Navigation HTML
   │       ├── home.html            // Home page, 'Home Page...'
-  │       └── patients.html        // HTML code for 'patient' page
+  │       └── patients.html        // HTML code for 'patient' page (module)
   └── README.md
 
 ```
