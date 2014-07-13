@@ -16,6 +16,7 @@ var patientSchema = new Schema({
     test1: String,
     test2: String,
     test3: String,
+    test4: String,
     details: [detailsSchema]
 });
 
@@ -25,6 +26,7 @@ patientSchema.statics.update = function (data, cb) {
         doc.test1 = data.test1;
         doc.test2 = data.test2;
         doc.test3 = data.test3;
+        doc.test4 = data.test4;
         doc.no = data.no;
 
         doc.save(cb);
@@ -33,7 +35,7 @@ patientSchema.statics.update = function (data, cb) {
 
 patientSchema.statics.getByGender = function (gender, cb) {
     this.find({ gender : gender })
-        .select('no name test1 test2 test3 gender')
+        .select('no name test1 test2 test3 test4 gender')
         .sort('no')
         .exec(cb);
 }

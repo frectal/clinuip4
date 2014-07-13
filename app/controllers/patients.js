@@ -58,6 +58,7 @@ var Patients = function Patients(passport) {
             newPatient.test1 = req.body.test1;
             newPatient.test2 = req.body.test2;
             newPatient.test3 = req.body.test3;
+            newPatient.test4 = req.body.test4;
             newPatient.no = req.body.no;
             newPatient.gender = req.body.gender;
             newPatient.save(function (err, patient) {

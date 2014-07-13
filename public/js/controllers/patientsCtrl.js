@@ -61,7 +61,8 @@ angular.module('clinuip')
                 name = htmlForm.find("#name"),
                 test1 = htmlForm.find("#test1"),
                 test2 = htmlForm.find("#test2"),
-                test3 = htmlForm.find("#test3");
+                test3 = htmlForm.find("#test3"),
+                test4 = htmlForm.find("#test4");
 
             name.focus();
 
@@ -72,6 +73,7 @@ angular.module('clinuip')
                     test1 : test1.val(),
                     test2 : test2.val(),
                     test3 : test3.val(),
+                    test4 : test4.val(),
                     gender : $scope.chosenGender.toLowerCase()
                 };
 
@@ -92,7 +94,8 @@ angular.module('clinuip')
                 name = htmlForm.find("#name").val(patient.name),
                 test1 = htmlForm.find("#test1").val(patient.test1),
                 test2 = htmlForm.find("#test2").val(patient.test2),
-                test3 = htmlForm.find("#test3").val(patient.test3);
+                test3 = htmlForm.find("#test3").val(patient.test3),
+                test4 = htmlForm.find("#test4").val(patient.test4);
 
             showModal(htmlForm, "Edit new patient", function () {
                 var item = _.findWhere($scope.patients, {_id: id});
@@ -100,6 +103,7 @@ angular.module('clinuip')
                 item.test1 = test1.val();
                 item.test2 = test2.val();
                 item.test3 = test3.val();
+                item.test4 = test4.val();
                 item.$save();
             });
         };
