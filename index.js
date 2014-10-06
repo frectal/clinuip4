@@ -5,7 +5,8 @@ var express = require('express'),
     controllers = require('./app/controllers'),
     app = express();
 
-mongoose.connect('mongodb://test:test@dbh55.mongolab.com:27557/heroku_app25028844');
+//mongoose.connect('mongodb://test:test@dbh55.mongolab.com:27557/heroku_app25028844');
+mongoose.connect('mongodb://localhost/clinuip3');
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));

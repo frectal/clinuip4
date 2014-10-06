@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('clinuip')
-    .controller('UsersCtrl', function UsersCtrl($scope, $location, $routeParams) {
+    .controller('ClinicalContentCtrl', function UsersCtrl($scope, $location, $routeParams) {
 
         //
 

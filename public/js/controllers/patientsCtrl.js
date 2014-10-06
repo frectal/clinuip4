@@ -17,6 +17,8 @@ angular.module('clinuip')
         $scope.patientFilter = null;
         $scope.detailFilter = null;
 
+        $scope.patientModal = {};
+
         var chartData = [
             { y: 50, name: "Male" },
             { y: 50, name: "Female" }
@@ -57,6 +59,12 @@ angular.module('clinuip')
         }, true);
 
         $scope.addPatient = function () {
+
+            $scope.patientModal = {};
+
+            $('#patientModal').modal({});
+            return;
+
             var htmlForm = $(".form-add-patient").clone().show(),
                 name = htmlForm.find("#name"),
                 test1 = htmlForm.find("#test1"),
@@ -88,7 +96,14 @@ angular.module('clinuip')
             });
         };
 
-        $scope.editPatient = function (id) {
+        $scope.editPatient = function (patient) {
+            $scope.patientModalTitle = 'Edit patient';
+            $scope.patientModal = patient;
+            console.log(patient);
+
+            $('#patientModal').modal({});
+            return;
+
             var htmlForm = $(".form-add-patient").clone().show(),
                 patient = _.findWhere($scope.patients, {_id: id}),
                 name = htmlForm.find("#name").val(patient.name),
