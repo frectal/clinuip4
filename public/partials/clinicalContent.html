@@ -18,13 +18,13 @@
                     <tbody>
                     <tr ng-repeat="content in contents">
                         <td>
-                            <pre class="pre">{{ content.tags }}</pre>
+                            <pre class="pre">{{ content.tags.join(', ') }}</pre>
                         </td>
                         <td>
                             <pre class="pre">{{ content.content }}</pre>
                         </td>
-                        <td><i class="fa fa-pencil-square-o" ng-click="editDetails(detail._id)"></i></td>
-                        <td><i class="fa fa-times" ng-click="deleteDetails(detail._id)"></i></td>
+                        <td><i class="fa fa-pencil-square-o" ng-click="editContent(content)"></i></td>
+                        <td><i class="fa fa-times" ng-click="deleteContent(content)"></i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -33,14 +33,37 @@
         </div>
     </div>
 
-    <!-- HTML Form for adding new patient details -->
-    <form class="form-horizontal form-add-content" role="form" style="display: none">
-        <div class="form-group">
-            <label for="name" class="col-sm-2 control-label" required>Details</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="tokenfield" />
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- HTML Form for adding new patient details -->
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="tags" class="col-sm-2 control-label" required>Details</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="tags" ng-model="current.tags" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content" class="col-sm-2 control-label" required>Content</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="4" id="content" ng-model="current.content"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveContent(current)" >Save changes</button>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
 
 </section>

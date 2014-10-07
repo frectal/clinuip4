@@ -52,7 +52,7 @@
                     <tr ng-repeat="detail in details">
                         <td>{{ detail.no }}</td>
                         <td>
-                            <div ng-repeat="item in detail.details  track by $index">{{ item }}<br></div>
+                            <span ng-repeat="item in detail.details  track by $index">{{ item }} </span>
                         </td>
                         <td><i class="fa fa-pencil-square-o" ng-click="editDetails(detail._id)"></i></td>
                         <td><i class="fa fa-times" ng-click="deleteDetails(detail._id)"></i></td>
