@@ -1,13 +1,7 @@
 'use strict';
 
 angular.module('clinuip')
-    .controller('PatientsCtrl', function PatientsCtrl($scope, Patients) {
-
-        var tokens = [
-            "H65.1","K65.0","A54.9","A56.2","B95.5","B97.7","D13.5","D13.9","E11.3",
-            "E11.7","G11.1","G11.8","G40.3","G40.9","H30.2","H31.4","H34.2","K55.1",
-            "K56.1","L20.8","Order: EKG","Medication: 1 tablet"
-        ];
+    .controller('PatientsCtrl', function PatientsCtrl($scope, $rootScope, Patients) {
 
         $scope.chosenGender = null;
         $scope.selectedPatient = null;
@@ -59,68 +53,27 @@ angular.module('clinuip')
         }, true);
 
         $scope.addPatient = function () {
-
+            $scope.patientModalTitle = 'Add new patient';
             $scope.patientModal = {};
+            $('#form-add-patient').modal({});
 
-            $('#patientModal').modal({});
-            return;
-
-            var htmlForm = $(".form-add-patient").clone().show(),
-                name = htmlForm.find("#name"),
-                test1 = htmlForm.find("#test1"),
-                test2 = htmlForm.find("#test2"),
-                test3 = htmlForm.find("#test3"),
-                test4 = htmlForm.find("#test4");
-
-            name.focus();
-
-            showModal(htmlForm, "Add new patient", function () {
-                var newPatient = {
-                    no : _.random(100, 999),
-                    name : name.val(),
-                    test1 : test1.val(),
-                    test2 : test2.val(),
-                    test3 : test3.val(),
-                    test4 : test4.val(),
-                    gender : $scope.chosenGender.toLowerCase()
-                };
-
-                Patients.save(newPatient, function (data) {
-                    $scope.patients.push(data);
-                    if (newPatient.gender == "male") {
-                        $scope.countMaleFemale.male += 1;
-                    } else {
-                        $scope.countMaleFemale.female += 1
-                    }
-                });
-            });
+            /*
+             Patients.save(newPatient, function (data) {
+             $scope.patients.push(data);
+             if (newPatient.gender == "male") {
+             $scope.countMaleFemale.male += 1;
+             } else {
+             $scope.countMaleFemale.female += 1
+             }
+             });
+             */
         };
 
         $scope.editPatient = function (patient) {
             $scope.patientModalTitle = 'Edit patient';
-            $scope.patientModal = patient;
-            console.log(patient);
+            $scope.patientModal = angular.copy(patient);
 
-            $('#patientModal').modal({});
-            return;
-
-            var htmlForm = $(".form-add-patient").clone().show(),
-                patient = _.findWhere($scope.patients, {_id: id}),
-                name = htmlForm.find("#name").val(patient.name),
-                test1 = htmlForm.find("#test1").val(patient.test1),
-                test2 = htmlForm.find("#test2").val(patient.test2),
-                test3 = htmlForm.find("#test3").val(patient.test3),
-                test4 = htmlForm.find("#test4").val(patient.test4);
-
-            showModal(htmlForm, "Edit new patient", function () {
-                var item = _.findWhere($scope.patients, {_id: id});
-                item.name = name.val();
-                item.test1 = test1.val();
-                item.test2 = test2.val();
-                item.test3 = test3.val();
-                item.test4 = test4.val();
-                item.$save();
-            });
+            $('#form-add-patient').modal({});
         };
 
         $scope.showDetails = function (id) {
@@ -131,49 +84,44 @@ angular.module('clinuip')
         };
 
         $scope.addDetails = function () {
-            var htmlForm = $(".form-add-details").clone().show(),
-                tags = htmlForm.find("#tokenfield").tokenfield({
-                    autocomplete: {
-                        source: tokens,
-                        delay: 100
-                    }
-                });
+            $scope.detailsModalTitle = 'Add patient details';
+            $scope.contentLines = '';
+            $scope.detailsModal = {};
+            $('#form-add-details').modal({});
 
-            showModal(htmlForm, "Add patient details", function () {
-                var items = [];
-                _.each(tags.tokenfield('getTokens'), function (item) {
-                    items.push(item.value);
-                });
-
-                var newItem = {
-                    no : _.random(100, 999),
-                    details: items
-                };
-
-                $scope.details.push(newItem);
-
-                Patients.detailsSave({ id : $scope.selectedPatient._id}, newItem);
-            });
+            // Patients.detailsSave({ id : $scope.selectedPatient._id}, newItem);
         };
 
-        $scope.editDetails = function (id) {
-            var htmlForm = $(".form-add-details").clone().show(),
-                item = _.findWhere($scope.details, {_id: id}),
-                tags = htmlForm.find("#tokenfield").val(item.details.join(', ')).tokenfield({
-                    autocomplete: {
-                        source: tokens,
-                        delay: 100
-                    }
-                });
+        //$scope.contentLines = '123';
+        $scope.editDetails = function (details) {
+            $scope.detailsModalTitle = 'Edit patient details';
+            $scope.contentLines = details.details.join('\n');
+            $scope.detailsModal = angular.copy(details);
+            $('#form-add-details').modal({});
 
-            showModal(htmlForm, "Edit patient details", function () {
-                var items = [];
-                _.each(tags.tokenfield('getTokens'), function (tag) {
-                    items.push(tag.value);
-                });
-                item.details = items;
-                Patients.detailsSave({ id : $scope.selectedPatient._id}, item);
-            });
+            // Patients.detailsSave({ id : $scope.selectedPatient._id}, item);
+        };
+
+        $scope.saveDetails = function (details) {
+            var list = _.filter($scope.contentLines.split('\n'), function(str) { return str !== ''; });
+            details.details = list;
+
+            //details.details = $scope.contentLines.split('\n');
+            $scope.contentLines = '';
+
+            console.log(details);
+            console.log($scope.details);
+
+            if (details._id) {
+                var index = _.findIndex($scope.details, { _id : details._id });
+                if (index !== -1) {
+                    $scope.details[index] = details;
+                }
+            } else {
+                details._id = _.random(1000, 9999);
+                $scope.details.push(angular.copy(details));
+            }
+            $('#form-add-details').modal('hide');
         };
 
         $scope.deleteDetails = function (id) {
@@ -188,25 +136,6 @@ angular.module('clinuip')
                 }
             });
         };
-
-        // Private util method
-        function showModal(html, title, callback) {
-            bootbox.dialog({
-                message: html,
-                title: title,
-                buttons: {
-                    success: {
-                        label: "Cancel",
-                        className: "btn btn-default"
-                    },
-                    main: {
-                        label: "Save",
-                        className: "btn-primary",
-                        callback: callback
-                    }
-                }
-            });
-        }
 
         // Create chart component
         var chart = new CanvasJS.Chart("chartContainer", {
@@ -231,4 +160,42 @@ angular.module('clinuip')
             chartData[1].y = Math.round(($scope.countMaleFemale.female / total) * 100);
             chart.render();
         }
+
+        function getAllItems() {
+            var items = [];
+            _.forEach($rootScope.contents, function(item) {
+                _.forEach(item.contents, function(content) {
+                    items.push({ value : item.tag + ' - ' + content });
+                });
+            });
+            return items;
+        }
+
+        var states = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: getAllItems()
+        });
+
+        states.initialize();
+
+        $('.typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'states',
+            displayKey: 'value',
+            source: states.ttAdapter()
+        });
+
+        $scope.notes = '';
+
+        $('.typeahead').on('typeahead:selected', function(event, object, dataset) {
+            $(this).val('');
+            $scope.$apply (function() {
+                $scope.contentLines += object.value + '\n';
+            });
+        });
     });

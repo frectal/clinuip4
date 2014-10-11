@@ -5,12 +5,11 @@
                 <p>Clinical Content</p>
             </blockquote>
             <div>
-                <input ng-model="detailFilter" type="text" class="form-control" placeholder="filter tags" style="margin-bottom: 5px">
                 <table class="table table-bordered table-hover table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 300px;">Tags Name</th>
-                            <th>Content</th>
+                            <th style="width: 300px;">Tag Name</th>
+                            <th>Contents</th>
                             <th style="width: 20px;"></th>
                             <th style="width: 20px;"></th>
                         </tr>
@@ -18,10 +17,10 @@
                     <tbody>
                     <tr ng-repeat="content in contents">
                         <td>
-                            <pre class="pre">{{ content.tags.join(', ') }}</pre>
+                            <pre class="pre">{{ content.tag }}</pre>
                         </td>
                         <td>
-                            <pre class="pre">{{ content.content }}</pre>
+                            <pre class="pre">{{ content.contents.join('\n') }}</pre>
                         </td>
                         <td><i class="fa fa-pencil-square-o" ng-click="editContent(content)"></i></td>
                         <td><i class="fa fa-times" ng-click="deleteContent(content)"></i></td>
@@ -45,15 +44,15 @@
                     <!-- HTML Form for adding new patient details -->
                     <form class="form-horizontal" role="form">
                         <div class="form-group">
-                            <label for="tags" class="col-sm-2 control-label" required>Details</label>
+                            <label for="tags" class="col-sm-2 control-label" required>Tag Name</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="tags" ng-model="current.tags" />
+                                <input type="text" class="form-control" id="tags" ng-model="current.tag" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="content" class="col-sm-2 control-label" required>Content</label>
+                            <label for="content" class="col-sm-2 control-label" required>Contents</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="4" id="content" ng-model="current.content"></textarea>
+                                <textarea class="form-control" rows="4" id="content" ng-model="contentLines"></textarea>
                             </div>
                         </div>
                     </form>

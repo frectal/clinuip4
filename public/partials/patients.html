@@ -52,10 +52,10 @@
                     <tr ng-repeat="detail in details">
                         <td>{{ detail.no }}</td>
                         <td>
-                            <span ng-repeat="item in detail.details  track by $index">{{ item }} </span>
+                            <span ng-repeat="item in detail.details track by $index">{{ item }}<br></span>
                         </td>
-                        <td><i class="fa fa-pencil-square-o" ng-click="editDetails(detail._id)"></i></td>
-                        <td><i class="fa fa-times" ng-click="deleteDetails(detail._id)"></i></td>
+                        <td><i class="fa fa-pencil-square-o" ng-click="editDetails(detail)"></i></td>
+                        <td><i class="fa fa-times" ng-click="deleteDetails(detail)"></i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -64,105 +64,101 @@
         </div>
     </div>
 
-    <div class="modal fade" id="patientModal">
+    <!-- Modal Patient -->
+    <div class="modal fade" id="form-add-patient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">{{ patientModalTitle }}</h4>
-              </div>
-              <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="identifier" class="col-sm-3 control-label" required>Patient Identifier</label>
-                        <div class="col-sm-9">
-                            <input ng-model="patientModal.identifier" type="text" class="form-control" id="identifier" required>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">{{ patientModalTitle }}</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- HTML Form for adding new patient -->
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="identifier" class="col-sm-3 control-label" required>Patient Identifier</label>
+                            <div class="col-sm-9">
+                                <input ng-model="patientModal.identifier" type="text" class="form-control" id="identifier" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label" required>Patient Name</label>
-                        <div class="col-sm-9">
-                            <input ng-model="patientModal.name" type="text" class="form-control" id="name" required>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-3 control-label" required>Patient Name</label>
+                            <div class="col-sm-9">
+                                <input ng-model="patientModal.name" type="text" class="form-control" id="name" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="dob" class="col-sm-3 control-label" required>DOB</label>
-                        <div class="col-sm-9">
-                            <input ng-model="patientModal.dob" type="text" class="form-control" id="dob" required>
+                        <div class="form-group">
+                            <label for="dob" class="col-sm-3 control-label" required>DOB</label>
+                            <div class="col-sm-9">
+                                <input ng-model="patientModal.dob" type="text" class="form-control" id="dob" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="sex" class="col-sm-3 control-label" required>Sex</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" ng-model="patientModal.sex" id="sex">
-                              <option>Female</option>
-                              <option>Male</option>
-                            </select>
+                        <div class="form-group">
+                            <label for="sex" class="col-sm-3 control-label" required>Sex</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" ng-model="patientModal.sex" id="sex">
+                                    <option>Female</option>
+                                    <option>Male</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="author" class="col-sm-3 control-label" required>Author</label>
-                        <div class="col-sm-9">
-                            <input ng-model="patientModal.author" type="text" class="form-control" id="author" required>
+                        <div class="form-group">
+                            <label for="author" class="col-sm-3 control-label" required>Author</label>
+                            <div class="col-sm-9">
+                                <input ng-model="patientModal.author" type="text" class="form-control" id="author" required>
+                            </div>
                         </div>
-                    </div>
-
-
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Save</button>
-              </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveContent(current)" >Save changes</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- HTML Form for adding new patient -->
-    <form class="form-horizontal form-add-patient" role="form" style="display: none">
-        <div class="form-group">
-            <label for="name" class="col-sm-2 control-label" required>Name</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="name" placeholder="Full name" required>
+    <!-- Modal Details -->
+    <div class="modal fade" id="form-add-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">{{ detailsModalTitle }}</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- HTML Form for adding new patient details -->
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Episode</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="detailsModal.no"  />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Add Notes</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control typeahead"  />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" required>Clinical Node</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6" ng-model="contentLines"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveDetails(detailsModal)" >Save changes</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="test1" class="col-sm-2 control-label">Phone</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="test1" placeholder="Phone">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="test2" class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="test2" placeholder="Email">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="test3" class="col-sm-2 control-label">Address</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="test3" placeholder="Address">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="test3" class="col-sm-2 control-label">Web</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="test4" placeholder="Web">
-            </div>
-        </div>
-    </form>
-    <!-- HTML Form for adding new patient details -->
-    <form class="form-horizontal form-add-details" role="form" style="display: none">
-        <div class="form-group">
-            <label for="name" class="col-sm-2 control-label" required>Details</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="tokenfield" />
-            </div>
-        </div>
-    </form>
+    </div>
 
 </section>
