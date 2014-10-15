@@ -44,6 +44,18 @@ var Patients = function Patients(passport) {
     });
 
     /**
+     * Get details information for single patient
+     * GET: /patients/123/details
+     */
+    this.router.get('/:id/details', function (req, res) {
+        if (req.param('search')) {
+            Patient.searchDetails(req.params.id, req.param('search'), function(items){
+                res.json(items);
+            });
+        }
+    });
+
+    /**
      * Create or update patient
      * POST: /patient
      */

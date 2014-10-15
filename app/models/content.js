@@ -4,6 +4,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var contentSchema = new Schema({
-    tags: [String],
+    tag: String,
     contents: [String]
 });
+
+module.exports = mongoose.model('Content', contentSchema);

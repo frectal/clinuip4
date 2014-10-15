@@ -16,7 +16,8 @@
             var apiDomain = '/api/v1/';
 
             return {
-                Patients:           $resource(apiDomain + 'patients', {})
+                Patients: $resource(apiDomain + 'patients', {}),
+                Contents: $resource(apiDomain + 'contents', {})
             }
 
         });

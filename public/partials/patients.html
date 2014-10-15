@@ -5,7 +5,8 @@
                 <p>Male/Female Patients</p>
             </blockquote>
             <div id="chartContainer" style="height: 200px"></div>
-            <button type="button" class="btn btn-primary pull-right" ng-click="addPatient()">Add Patient</button>
+            <br>
+            <button type="button" class="btn btn-default btn-block" ng-click="addPatient()">Add New Patient</button>
         </div>
         <div class="col-sm-7 col-md-4">
             <blockquote>
@@ -49,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="detail in selectedPatient.details">
+                    <tr ng-repeat="detail in selectedPatient.details | filter:detailFilter">
                         <td>{{ detail.no }}</td>
                         <td>
                             <span ng-repeat="item in detail.details track by $index">{{ item }}<br></span>
@@ -74,49 +75,49 @@
                 </div>
                 <div class="modal-body">
                     <!-- HTML Form for adding new patient -->
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label for="identifier" class="col-sm-3 control-label" required>Patient Identifier</label>
+                    <form class="form-horizontal" role="form" name="patientForm">
+                        <div class="form-group" ng-class="{ 'has-error': patientForm.identifier.$invalid && patientForm.identifier.$dirty }">
+                            <label for="identifier" class="col-sm-3 control-label">Patient Identifier</label>
                             <div class="col-sm-9">
-                                <input ng-model="patientModal.identifier" type="text" class="form-control" id="identifier" required>
+                                <input ng-model="patientModal.identifier" type="text" class="form-control" name="identifier" id="identifier" required>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': patientForm.name.$invalid && patientForm.name.$dirty }">
                             <label for="name" class="col-sm-3 control-label" required>Patient Name</label>
                             <div class="col-sm-9">
-                                <input ng-model="patientModal.name" type="text" class="form-control" id="name" required>
+                                <input ng-model="patientModal.name" type="text" class="form-control" name="name" id="name" required>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': patientForm.dob.$invalid && patientForm.dob.$dirty }">
                             <label for="dob" class="col-sm-3 control-label" required>DOB</label>
                             <div class="col-sm-9">
-                                <input ng-model="patientModal.dob" type="text" class="form-control" id="dob" required>
+                                <input ng-model="patientModal.dob" type="text" class="form-control" id="dob" name="dob" required>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': patientForm.sex.$invalid && patientForm.sex.$dirty }">
                             <label for="sex" class="col-sm-3 control-label" required>Sex</label>
                             <div class="col-sm-9">
-                                <select class="form-control" ng-model="patientModal.sex" id="sex">
+                                <select class="form-control" ng-model="patientModal.sex" id="sex" name="sex">
                                     <option value="female">Female</option>
                                     <option value="male">Male</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': patientForm.author.$invalid && patientForm.author.$dirty }">
                             <label for="author" class="col-sm-3 control-label" required>Author</label>
                             <div class="col-sm-9">
-                                <input ng-model="patientModal.author" type="text" class="form-control" id="author" required>
+                                <input ng-model="patientModal.author" type="text" class="form-control" id="author" name="author" required>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" ng-click="savePatient(patientModal)" >Save changes</button>
+                    <button type="button" class="btn btn-primary" ng-click="savePatient(patientModal)" ng-disabled="patientForm.$invalid">Save changes</button>
                 </div>
             </div>
         </div>
@@ -132,11 +133,11 @@
                 </div>
                 <div class="modal-body">
                     <!-- HTML Form for adding new patient details -->
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
+                    <form class="form-horizontal" role="form" name="detailForm">
+                        <div class="form-group" ng-class="{ 'has-error': detailForm.no.$invalid && detailForm.no.$dirty }">
                             <label for="name" class="col-sm-2 control-label">Episode</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" ng-model="detailsModal.no"  />
+                                <input type="text" class="form-control" ng-model="detailsModal.no" name="no" required />
                             </div>
                         </div>
                         <div class="form-group">
@@ -145,29 +146,29 @@
                                 <input type="text" class="form-control typeahead"  />
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group"  ng-class="{ 'has-error': detailForm.lines.$invalid && detailForm.lines.$dirty }">
                             <label class="col-sm-2 control-label" required>Clinical Node</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="6" ng-model="contentLines"></textarea>
+                                <textarea class="form-control" rows="6" ng-model="contentLines" name="lines" required></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': detailForm.address.$invalid && detailForm.address.$dirty }">
                             <label for="name" class="col-sm-2 control-label">Author</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" ng-model="detailsModal.author"  />
+                                <input type="text" class="form-control" ng-model="detailsModal.author" name="address" required/>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{ 'has-error': detailForm.date.$invalid && detailForm.date.$dirty }">
                             <label for="name" class="col-sm-2 control-label">Date</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" ng-model="detailsModal.date"  />
+                                <input type="text" class="form-control" ng-model="detailsModal.date" id="date" name="date" required />
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" ng-click="saveDetails(detailsModal)" >Save changes</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveDetails(detailsModal)" ng-disabled="detailForm.$invalid">Save changes</button>
                 </div>
             </div>
         </div>

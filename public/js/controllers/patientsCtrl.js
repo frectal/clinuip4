@@ -10,7 +10,6 @@ angular.module('clinuip')
         $scope.countMaleFemale = { male: 0, female : 0 };
         $scope.patientFilter = null;
         $scope.detailFilter = null;
-
         $scope.patientModal = {};
 
         var chartData = [
@@ -32,10 +31,8 @@ angular.module('clinuip')
 
         $scope.$watch('detailFilter', function (newValue) {
             if ($scope.selectedPatient) {
-                $scope.details = $scope.selectedPatient.details;
-                return;
                 Patients.details({ id: $scope.selectedPatient._id, search: newValue }, function (data) {
-
+                    //$scope.selectedPatient.details = data;
                 });
             }
         }, true);
