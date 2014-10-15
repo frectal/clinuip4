@@ -46,6 +46,7 @@ angular.module('clinuip')
         };
 
         $scope.addContent = function () {
+            $scope.detailForm.$setPristine();
             $scope.current = {};
             $scope.contentLines;
             $('#myModal').modal();

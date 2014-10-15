@@ -52,6 +52,7 @@ angular.module('clinuip')
         }, true);
 
         $scope.addPatient = function () {
+            $scope.patientForm.$setPristine();
             $scope.patientModalTitle = 'Add new patient';
             $scope.patientModal = {};
             $('#form-add-patient').modal({});
@@ -91,6 +92,7 @@ angular.module('clinuip')
         };
 
         $scope.addDetails = function () {
+            $scope.detailForm.$setPristine();
             $scope.detailsModalTitle = 'Add patient details';
             $scope.contentLines = '';
             $scope.detailsModal = {};
