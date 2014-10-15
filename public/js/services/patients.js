@@ -16,12 +16,7 @@
             var apiDomain = '/api/v1/';
 
             return {
-                Content:           $resource(apiDomain + 'content', {}),
-                RealEstate:        $resource(apiDomain + 'RealEstate/list', {}),
-                RealEstateGet:     $resource(apiDomain + 'realestate/get/:id', {id:'@id'}),
-                Building:          $resource(apiDomain + 'Building/List', {}),
-                Equipment:         $resource(apiDomain + 'ie/ListByBuilding/:id', {id:'@id'}),
-                EquipmentProperty: $resource(apiDomain + 'Attribute/ListByEquipment/:id', {id:'@id'})
+                Patients:           $resource(apiDomain + 'patients', {})
             }
 
         });

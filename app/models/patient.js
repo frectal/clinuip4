@@ -5,63 +5,47 @@ var _ = require('underscore'),
     Schema = mongoose.Schema;
 
 var detailsSchema = new Schema({
-    no: Number,
-    details: [String]
+    no: String,
+    details: [String],
+    author: String,
+    date: String
 });
 
 var patientSchema = new Schema({
-    no: Number,
-    gender: String,
+    identifier: String,
     name: String,
-    test1: String,
-    test2: String,
-    test3: String,
-    test4: String,
+    gender: String,
+    dob: String,
+    sex: String,
+    author: String,
     details: [detailsSchema]
 });
 
-patientSchema.statics.update = function (data, cb) {
-    this.findById(data._id, function (err, doc) {
-        doc.name = data.name;
-        doc.test1 = data.test1;
-        doc.test2 = data.test2;
-        doc.test3 = data.test3;
-        doc.test4 = data.test4;
-        doc.no = data.no;
-
-        doc.save(cb);
-    });
-}
-
-patientSchema.statics.getByGender = function (gender, cb) {
-    this.find({ gender : gender })
-        .select('no name test1 test2 test3 test4 gender')
+patientSchema.statics.getByGender = function (sex, cb) {
+    this.find({ sex : sex })
         .sort('no')
         .exec(cb);
 }
 
 patientSchema.statics.percentage = function (cb) {
     var that = this;
-    that.count({ gender : 'male'}, function (errMale, countMale) {
-        that.count({ gender : 'female'}, function (errFemale, countFemale) {
+    that.count({ sex : 'male'}, function (errMale, countMale) {
+        that.count({ sex : 'female'}, function (errFemale, countFemale) {
             cb({ male : countMale, female: countFemale });
         });
     });
 }
 
-patientSchema.statics.search = function (gender, search, cb) {
+patientSchema.statics.search = function (sex, search, cb) {
     var regex = new RegExp(search, 'i');
   
-    this.find({ gender : gender })
+    this.find({ sex : sex })
         .or([
             { 'name' : { $regex: regex } },
-            { 'test1' : { $regex: regex } },
-            { 'test2' : { $regex: regex } },
-            { 'test3' : { $regex: regex } },
-            { 'no' : !isNaN(search) ? parseInt(search, 10) : 0 }
+            { 'sex' : { $regex: regex } },
+            { 'dob' : { $regex: regex } }
         ])
-        .select('no name test1 test2 test3 gender')
-        .sort('no')
+        .sort('name')
         .exec(cb);
 }
 
@@ -77,30 +61,29 @@ patientSchema.statics.searchDetails = function (id_patient, search, cb) {
                 items.push(item);
                 return;
             }
-
         });
         
         cb(items);
     });
 }
 
-patientSchema.statics.addDetails = function (id_patient, no, details, cb) {
+patientSchema.statics.addDetails = function (id_patient, detail, cb) {
     this.findById(id_patient, function (err, doc) {
-        doc.details.push({
-            no : no,
-            details: details
-        });
+        doc.details.push(detail);
         doc.save(cb);
     });
 }
 
-patientSchema.statics.updateDetails = function (id, details, cb) {
+patientSchema.statics.updateDetails = function (detail, cb) {
     this.findOne(
-        {'details._id': id},
+        {'details._id': detail._id},
         {'details.$': 1},
         function (err, data) {
             if (data) {
-                data.details[0].details = details;
+                data.details[0].no = detail.no;
+                data.details[0].details = detail.details;
+                data.details[0].author = detail.author;
+                data.details[0].date = detail.date;
                 data.save(cb);
             }
         }

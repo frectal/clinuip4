@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('clinuip')
-    .controller('PatientsCtrl', function PatientsCtrl($scope, $rootScope, Patients) {
+    .controller('PatientsCtrl', function PatientsCtrl($scope, $rootScope, Patients, Api) {
 
         $scope.chosenGender = null;
         $scope.selectedPatient = null;
@@ -32,8 +32,10 @@ angular.module('clinuip')
 
         $scope.$watch('detailFilter', function (newValue) {
             if ($scope.selectedPatient) {
+                $scope.details = $scope.selectedPatient.details;
+                return;
                 Patients.details({ id: $scope.selectedPatient._id, search: newValue }, function (data) {
-                    $scope.details = data;
+
                 });
             }
         }, true);
@@ -56,31 +58,39 @@ angular.module('clinuip')
             $scope.patientModalTitle = 'Add new patient';
             $scope.patientModal = {};
             $('#form-add-patient').modal({});
-
-            /*
-             Patients.save(newPatient, function (data) {
-             $scope.patients.push(data);
-             if (newPatient.gender == "male") {
-             $scope.countMaleFemale.male += 1;
-             } else {
-             $scope.countMaleFemale.female += 1
-             }
-             });
-             */
         };
 
         $scope.editPatient = function (patient) {
             $scope.patientModalTitle = 'Edit patient';
             $scope.patientModal = angular.copy(patient);
-
             $('#form-add-patient').modal({});
         };
 
-        $scope.showDetails = function (id) {
-            Patients.details({ id : id }, function (data) {
-                $scope.selectedPatient = _.findWhere($scope.patients, {_id: id});
-                $scope.details = data;
+        $scope.savePatient = function (patient) {
+            Api.Patients.save(patient, function (data) {
+                if (!patient._id) {
+                    $scope.patients.push(patient);
+
+                    if (data.sex == "male") {
+                        $scope.countMaleFemale.male += 1;
+                    } else {
+                        $scope.countMaleFemale.female += 1
+                    }
+                } else {
+                    var index = _.findIndex($scope.patients, { _id : patient._id });
+                    if (index !== -1) {
+                        $scope.patients[index] = patient;
+                    }
+                }
+
+                $('#form-add-patient').modal('hide');
             });
+        };
+
+
+        $scope.showDetails = function (patient) {
+            $scope.selectedPatient = patient;
+            $scope.details = patient.details;
         };
 
         $scope.addDetails = function () {
@@ -88,8 +98,6 @@ angular.module('clinuip')
             $scope.contentLines = '';
             $scope.detailsModal = {};
             $('#form-add-details').modal({});
-
-            // Patients.detailsSave({ id : $scope.selectedPatient._id}, newItem);
         };
 
         //$scope.contentLines = '123';
@@ -98,30 +106,25 @@ angular.module('clinuip')
             $scope.contentLines = details.details.join('\n');
             $scope.detailsModal = angular.copy(details);
             $('#form-add-details').modal({});
-
-            // Patients.detailsSave({ id : $scope.selectedPatient._id}, item);
         };
 
         $scope.saveDetails = function (details) {
             var list = _.filter($scope.contentLines.split('\n'), function(str) { return str !== ''; });
             details.details = list;
-
-            //details.details = $scope.contentLines.split('\n');
             $scope.contentLines = '';
 
-            console.log(details);
-            console.log($scope.details);
-
-            if (details._id) {
-                var index = _.findIndex($scope.details, { _id : details._id });
-                if (index !== -1) {
-                    $scope.details[index] = details;
+            Patients.detailsSave({ id : $scope.selectedPatient._id}, details, function() {
+                if (details._id) {
+                    var index = _.findIndex($scope.details, { _id : details._id });
+                    if (index !== -1) {
+                        $scope.details[index] = details;
+                    }
+                } else {
+                    details._id = _.random(1000, 9999);
+                    $scope.details.push(angular.copy(details));
                 }
-            } else {
-                details._id = _.random(1000, 9999);
-                $scope.details.push(angular.copy(details));
-            }
-            $('#form-add-details').modal('hide');
+                $('#form-add-details').modal('hide');
+            });
         };
 
         $scope.deleteDetails = function (id) {

@@ -48,37 +48,28 @@ var Patients = function Patients(passport) {
      * POST: /patient
      */
     this.router.post('/', function (req, res) {
+
         if (req.body._id) {
-            Patient.update(req.body, function (err, patient) {
-                res.json(patient);
-            });            
+            Patient
+                .findOne({'_id': req.body._id})
+                .exec(function (err, data) {
+                    if (data) {
+                        data.identifier = req.body.identifier;
+                        data.name = req.body.name;
+                        data.gender = req.body.gender;
+                        data.dob = req.body.dob;
+                        data.sex = req.body.sex;
+                        data.author = req.body.author;
+                        data.save(function () {
+                            res.json(data);
+                        });
+                    }
+                });
         } else {
-            var newPatient = new Patient();
-            newPatient.name = req.body.name;
-            newPatient.test1 = req.body.test1;
-            newPatient.test2 = req.body.test2;
-            newPatient.test3 = req.body.test3;
-            newPatient.test4 = req.body.test4;
-            newPatient.no = req.body.no;
-            newPatient.gender = req.body.gender;
+            var newPatient = new Patient(req.body);
+
             newPatient.save(function (err, patient) {
                 res.json(patient);
-            });
-        }
-    });
-
-    /**
-     * Get details information for single patient
-     * GET: /patients/123/details
-     */
-    this.router.get('/:id/details', function (req, res) {
-        if (req.param('search')) {
-            Patient.searchDetails(req.params.id, req.param('search'), function(items){
-                res.json(items);
-            });
-        } else {
-            Patient.findById(req.params.id, function (err, doc) {
-                res.json(doc.details);
             });
         }
     });
@@ -89,11 +80,12 @@ var Patients = function Patients(passport) {
      */
     this.router.post('/:id/details', function (req, res) {
         if (req.body._id) {
-            Patient.updateDetails(req.body._id, req.body.details, function (err, savedData) {
-                res.json(savedData.details[0]);
+            Patient.updateDetails(req.body, function (err, savedData) {
+                console.log(savedData);
+                res.json(null);
             });
         } else {
-            Patient.addDetails(req.params.id, req.body.no, req.body.details, function (err, data) {
+            Patient.addDetails(req.param('id'), req.body, function (err, data) {
                 res.json(data);
             });
         }
