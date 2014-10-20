@@ -1,7 +1,27 @@
 ClineUiP 2
 ===
 
-Folder and file structure:
+This is Node.js + MongoDB application. You need to have instaled Node.js and MongoDB on yout PC to be able to run application.
+
+Setup
+--
+- get latest code from source control:
+```sh
+mkdir nameOfFolder
+cd nameOfFolder
+git clone git@bitbucket.org:frectal/clinuip3_mean.git
+```
+- install Node.js modules
+```sh
+npm install
+```
+- start application
+```sh
+node index.js
+```
+
+Folder and file structure
+----
 
 ```sh
   .
