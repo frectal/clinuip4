@@ -16,7 +16,12 @@
             var apiDomain = '/api/v1/';
 
             return {
-                Patients: $resource(apiDomain + 'patients', {}),
+                Patients: $resource(apiDomain + 'patients', {}, {
+                    del: {
+                        method : 'DELETE',
+                        url: apiDomain + 'patients' + '/:id'
+                    }
+                }),
                 Contents: $resource(apiDomain + 'contents', {})
             }
 

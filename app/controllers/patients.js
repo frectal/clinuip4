@@ -87,6 +87,18 @@ var Patients = function Patients(passport) {
     });
 
     /**
+     * Delete patient
+     * DELETE: /patients
+     */
+    this.router.delete('/:id', function (req, res) {
+        if (req.params.id) {
+            Patient.findByIdAndRemove(req.params.id, function (err, data) {
+                res.json(data);
+            });
+        }
+    });
+
+    /**
      * Create or update patient details (tags)
      * POST: /patients/123/details
      */

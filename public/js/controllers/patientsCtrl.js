@@ -17,11 +17,14 @@ angular.module('clinuip')
             { y: 50, name: "Female" }
         ];
 
-        // Load data for chart
-        Patients.get({ percentage : true }, function (data) {
-            $scope.countMaleFemale.female = data.female;
-            $scope.countMaleFemale.male = data.male;
-        });
+
+        function loadPatientsPercentage() {
+            Patients.get({ percentage : true }, function (data) {
+                $scope.countMaleFemale.female = data.female;
+                $scope.countMaleFemale.male = data.male;
+            });
+        }
+        loadPatientsPercentage();
 
         $scope.$watch('patientFilter', function (newValue) {
             Patients.query({ gender : $scope.chosenGender, search : newValue}, function (data) {
@@ -37,13 +40,17 @@ angular.module('clinuip')
             }
         }, true);
 
-        $scope.$watch('chosenGender', function (newValue, oldValue) {
+        function loadPatients(gender) {
+            $scope.details = [];
+            $scope.selectedPatient = null;
+            Patients.query({ gender : gender}, function (data) {
+                $scope.patients = data;
+            });
+        }
+
+        $scope.$watch('chosenGender', function (newValue) {
             if (newValue && ['male', 'female'].indexOf(newValue.toLowerCase()) !== -1) {
-                $scope.details = [];
-                $scope.selectedPatient = null;
-                Patients.query({ gender : newValue.toLowerCase()}, function (data) {
-                    $scope.patients = data;
-                });
+                loadPatients(newValue.toLowerCase());
             }
         }, true);
 
@@ -54,7 +61,9 @@ angular.module('clinuip')
         $scope.addPatient = function () {
             $scope.patientForm.$setPristine();
             $scope.patientModalTitle = 'Add new patient';
-            $scope.patientModal = {};
+            $scope.patientModal = {
+                dob: moment().format('DD/MM/YYYY')
+            };
             $('#form-add-patient').modal({});
         };
 
@@ -66,22 +75,22 @@ angular.module('clinuip')
 
         $scope.savePatient = function (patient) {
             Api.Patients.save(patient, function (data) {
-                if (!patient._id) {
-                    $scope.patients.push(patient);
-
-                    if (data.sex == "male") {
-                        $scope.countMaleFemale.male += 1;
-                    } else {
-                        $scope.countMaleFemale.female += 1
-                    }
-                } else {
-                    var index = _.findIndex($scope.patients, { _id : patient._id });
-                    if (index !== -1) {
-                        $scope.patients[index] = patient;
-                    }
-                }
+                loadPatientsPercentage();
+                loadPatients($scope.chosenGender);
 
                 $('#form-add-patient').modal('hide');
+            });
+        };
+
+        $scope.deletePatient = function (patient) {
+            bootbox.confirm("Are you sure?", function(result) {
+                if (result) {
+
+                    Api.Patients.del({id : patient._id }, function (data) {
+                        loadPatientsPercentage();
+                        loadPatients($scope.chosenGender);
+                    });
+                }
             });
         };
 
@@ -92,16 +101,20 @@ angular.module('clinuip')
         };
 
         $scope.addDetails = function () {
+            $('.add-notes').val('');
             $scope.detailForm.$setPristine();
-            $scope.detailsModalTitle = 'Add patient details';
+            $scope.detailsModalTitle = 'Add Patient Data';
             $scope.contentLines = '';
-            $scope.detailsModal = {};
+            $scope.detailsModal = {
+                date: moment().format('DD/MM/YYYY')
+            };
             $('#form-add-details').modal({});
         };
 
         //$scope.contentLines = '123';
         $scope.editDetails = function (details) {
-            $scope.detailsModalTitle = 'Edit patient details';
+            $('.add-notes').val('');
+            $scope.detailsModalTitle = 'Edit Patient Data';
             $scope.contentLines = details.details.join('\n');
             $scope.detailsModal = angular.copy(details);
             $('#form-add-details').modal({});
@@ -126,14 +139,14 @@ angular.module('clinuip')
             });
         };
 
-        $scope.deleteDetails = function (id) {
+        $scope.deleteDetails = function (detail) {
             bootbox.confirm("Are you sure?", function(result) {
                 if (result) {
-                    var item = _.findWhere($scope.details, {_id: id});
-                    $scope.details = _.without($scope.details, item);
+                    var item = _.findWhere($scope.selectedPatient.details, {_id: detail._id});
+                    $scope.selectedPatient.details = _.without($scope.selectedPatient.details, item);
                     Patients.detailsDelete({
                         id : $scope.selectedPatient._id,
-                        id_detail : id
+                        id_detail : detail._id
                     });
                 }
             });
@@ -200,4 +213,20 @@ angular.module('clinuip')
                 $scope.contentLines += object.value + '\n';
             });
         });
+
+        $('.patient-datepicker').datepicker({ format: 'dd/mm/yyyy' }).on('changeDate', function(ev){
+            $scope.$apply (function() {
+                $scope.patientModal.dob = moment(ev.date).format('DD/MM/YYYY');
+            });
+            $('.patient-datepicker').datepicker('hide');
+        });
+
+        $('.detail-datepicker').datepicker({ format: 'dd/mm/yyyy' }).on('changeDate', function(ev){
+            $scope.$apply (function() {
+                $scope.detailsModal.date = moment(ev.date).format('DD/MM/YYYY');
+            });
+            $('.detail-datepicker').datepicker('hide');
+        });
+
+
     });
