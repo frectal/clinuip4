@@ -9,7 +9,8 @@
                 <table class="table table-bordered table-hover table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 300px;">Tag Name</th>
+                            <th style="width: 250px;">Content Name</th>
+                            <th style="width: 150px;">Tags</th>
                             <th>Contents</th>
                             <th style="width: 20px;"></th>
                             <th style="width: 20px;"></th>
@@ -18,7 +19,10 @@
                     <tbody>
                     <tr ng-repeat="content in contents | filter : contentFilter">
                         <td>
-                            <pre class="pre">{{ content.tag }}</pre>
+                            <pre class="pre">{{ content.name }}</pre>
+                        </td>
+                        <td>
+                            <pre class="pre">{{ content.tags.join(', ') }}</pre>
                         </td>
                         <td>
                             <pre class="pre">{{ content.contents.join('\n') }}</pre>
@@ -44,10 +48,16 @@
                 <div class="modal-body">
                     <!-- HTML Form for adding new patient details -->
                     <form class="form-horizontal" role="form" name="detailForm">
-                        <div class="form-group" ng-class="{ 'has-error': detailForm.tag.$invalid && detailForm.tag.$dirty }">
-                            <label for="tag" class="col-sm-2 control-label" required>Tag Name</label>
+                        <div class="form-group" ng-class="{ 'has-error': detailForm.name.$invalid && detailForm.name.$dirty }">
+                            <label for="name" class="col-sm-2 control-label" required>Content Name</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="tag" name="tag" ng-model="current.tag" required />
+                                <input type="text" class="form-control" id="name" name="name" ng-model="current.name" required />
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': detailForm.tags.$invalid && detailForm.tags.$dirty }">
+                            <label for="tags" class="col-sm-2 control-label" required>Tags</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="tags" name="tags" ng-model="tagLines" required />
                             </div>
                         </div>
                         <div class="form-group" ng-class="{ 'has-error': detailForm.content.$invalid && detailForm.content.$dirty }">

@@ -22,7 +22,18 @@
                         url: apiDomain + 'patients' + '/:id'
                     }
                 }),
-                Contents: $resource(apiDomain + 'contents', {})
+                Contents: $resource(apiDomain + 'contents', {}, {
+                    tags: {
+                        method: 'GET',
+                        isArray: true,
+                        url: apiDomain + 'contents/tags'
+                    },
+                    contents: {
+                        method: 'GET',
+                        isArray: true,
+                        url: apiDomain + 'contents/contents/:tag'
+                    }
+                })
             }
 
         });

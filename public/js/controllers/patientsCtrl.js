@@ -11,6 +11,7 @@ angular.module('clinuip')
         $scope.patientFilter = null;
         $scope.detailFilter = null;
         $scope.patientModal = {};
+        $scope.notes = '';
 
         var chartData = [
             { y: 50, name: "Male" },
@@ -180,7 +181,7 @@ angular.module('clinuip')
             var items = [];
             _.forEach($rootScope.contents, function(item) {
                 _.forEach(item.contents, function(content) {
-                    items.push({ value : item.tag + ' - ' + content });
+                    items.push({ value : item.name + ' - ' + content });
                 });
             });
             return items;
@@ -205,12 +206,43 @@ angular.module('clinuip')
             source: states.ttAdapter()
         });
 
-        $scope.notes = '';
-
         $('.typeahead').on('typeahead:selected', function(event, object, dataset) {
             $(this).val('');
             $scope.$apply (function() {
                 $scope.contentLines += object.value + '\n';
+            });
+        });
+
+
+        function getAllTags() {
+            var items = [];
+            _.forEach($rootScope.tags, function(item) {
+                items.push({ value : item });
+            });
+            return items;
+        }
+        var tags = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: getAllTags()
+        });
+        tags.initialize();
+
+        $('.tags').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            },
+            {
+                name: 'states',
+                displayKey: 'value',
+                source: tags.ttAdapter()
+            });
+
+        $('.tags').on('typeahead:selected', function(event, object, dataset) {
+            $(this).val('');
+            Api.Contents.contents({tag : object.value}, function (data) {
+                $scope.contentLines += data.join('\n') + '\n';
             });
         });
 

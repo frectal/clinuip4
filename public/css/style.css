@@ -12,6 +12,7 @@
 }
 
 .typeahead,
+.tags,
 .tt-query,
 .tt-hint {
     width: 100%;
@@ -20,11 +21,13 @@
     outline: none;
 }
 
-.typeahead {
+.typeahead,
+.tags {
     background-color: #fff;
 }
 
-.typeahead:focus {
+.typeahead:focus,
+.tags:focus {
     border: 2px solid #0097cf;
 }
 

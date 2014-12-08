@@ -9,6 +9,11 @@ angular.module('clinuip')
 
         $scope.saveContent = function (content) {
             content.contents = $scope.contentLines.split('\n');
+            content.tags = [];
+
+            _($scope.tagLines.split(',')).forEach(function(str) {
+                content.tags.push(str.trim());
+            });
 
             Api.Contents.save(content, function(data) {
                 if (data) {
@@ -29,6 +34,7 @@ angular.module('clinuip')
 
         $scope.editContent = function (content) {
             $scope.contentLines = content.contents.join('\n');
+            $scope.tagLines = content.tags.join(', ');
             $scope.current = angular.copy(content);
             $('#myModal').modal();
         };
