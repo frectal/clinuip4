@@ -18,7 +18,7 @@ angular.module('clinuip')
             Api.Contents.save(content, function(data) {
                 if (data) {
                     if (content._id) {
-                        var index = _.findIndex($rootScope.contents, { id : content.id });
+                        var index = _.findIndex($rootScope.contents, { _id : content._id });
                         if (index !== -1) {
                             $rootScope.contents[index] = data;
                         }
