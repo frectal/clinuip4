@@ -36,18 +36,13 @@ var Contents = function Contents(passport) {
     });
 
     this.router.get('/contents/:tag', function (req, res) {
+        var tags = req.params.tag.split(',');
         Content
-            .find({ 'tags' : req.params.tag })
-            .select('contents')
+            .find()
+            .where('tags').in(tags)
+            .select('name contents')
             .exec(function(err, data) {
-                var contentsStr = [];
-                _.each(data, function (item) {
-                    _.each(item.contents, function (c) {
-                        contentsStr.push(c);
-                    });
-                });
-
-                res.json(contentsStr);
+                res.json(data);
             });
     });
 

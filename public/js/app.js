@@ -8,9 +8,6 @@ app.run(function($rootScope, Api) {
     Api.Contents.query(function(data) {
         $rootScope.contents = data;
     });
-    Api.Contents.tags(function(tags) {
-        $rootScope.tags = tags;
-    });
 });
 
 app.config(function ($routeProvider) {

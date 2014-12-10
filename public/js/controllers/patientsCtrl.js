@@ -41,17 +41,23 @@ angular.module('clinuip')
             }
         }, true);
 
-        function loadPatients(gender) {
+        function loadPatients(gender, query) {
             $scope.details = [];
             $scope.selectedPatient = null;
-            Patients.query({ gender : gender}, function (data) {
+            Patients.query({ gender : gender, query: query }, function (data) {
                 $scope.patients = data;
             });
         }
 
         $scope.$watch('chosenGender', function (newValue) {
             if (newValue && ['male', 'female'].indexOf(newValue.toLowerCase()) !== -1) {
-                loadPatients(newValue.toLowerCase());
+                loadPatients(newValue.toLowerCase(), $scope.query);
+            }
+        }, true);
+
+        $scope.$watch('query', function (newValue) {
+            if ($scope.chosenGender) {
+                loadPatients($scope.chosenGender.toLowerCase(), newValue);
             }
         }, true);
 
@@ -86,7 +92,6 @@ angular.module('clinuip')
         $scope.deletePatient = function (patient) {
             bootbox.confirm("Are you sure?", function(result) {
                 if (result) {
-
                     Api.Patients.del({id : patient._id }, function (data) {
                         loadPatientsPercentage();
                         loadPatients($scope.chosenGender);
@@ -177,34 +182,36 @@ angular.module('clinuip')
             chart.render();
         }
 
-        function getAllItems() {
-            var items = [];
-            _.forEach($rootScope.contents, function(item) {
-                _.forEach(item.contents, function(content) {
-                    items.push({ value : item.name + ' - ' + content });
+        $scope.initTypeahead = function () {
+            function getAllItems() {
+                var items = [];
+                _.forEach($rootScope.contents, function(item) {
+                    _.forEach(item.contents, function(content) {
+                        items.push({ value : item.name + ' - ' + content });
+                    });
                 });
+                return items;
+            }
+
+            var states = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: getAllItems()
             });
-            return items;
-        }
 
-        var states = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: getAllItems()
-        });
+            states.initialize();
 
-        states.initialize();
-
-        $('.typeahead').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },
-        {
-            name: 'states',
-            displayKey: 'value',
-            source: states.ttAdapter()
-        });
+            $('.typeahead').typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: 'states',
+                    displayKey: 'value',
+                    source: states.ttAdapter()
+                });
+        };
 
         $('.typeahead').on('typeahead:selected', function(event, object, dataset) {
             $(this).val('');
@@ -213,38 +220,36 @@ angular.module('clinuip')
             });
         });
 
+        $scope.destroyTypeahead = function () {
+            $('.typeahead').typeahead('destroy');
+        };
 
-        function getAllTags() {
-            var items = [];
-            _.forEach($rootScope.tags, function(item) {
-                items.push({ value : item });
-            });
-            return items;
-        }
-        var tags = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: getAllTags()
-        });
-        tags.initialize();
+        $scope.$watch('detailsModal.tags', function (newValue, oldValue) {
+            $scope.destroyTypeahead();
 
-        $('.tags').typeahead({
-                hint: true,
-                highlight: true,
-                minLength: 1
-            },
-            {
-                name: 'states',
-                displayKey: 'value',
-                source: tags.ttAdapter()
-            });
+            var tags = [];
+            if (newValue && newValue !== "") {
+                _(newValue.split(',')).forEach(function(item) {
+                    if (item.trim() !== "") {
+                        tags.push(item.trim())
+                    }
+                });
 
-        $('.tags').on('typeahead:selected', function(event, object, dataset) {
-            $(this).val('');
-            Api.Contents.contents({tag : object.value}, function (data) {
-                $scope.contentLines += data.join('\n') + '\n';
-            });
-        });
+                if (tags.length > 0) {
+                    Api.Contents.contents({tag : tags.join(',')}, function (data) {
+                        $rootScope.contents = data;
+                        $scope.initTypeahead();
+                    });
+                } else {
+                    $scope.initTypeahead();
+                }
+            } else {
+                Api.Contents.query(function(data) {
+                    $rootScope.contents = data;
+                    $scope.initTypeahead();
+                });
+            }
+        }, true);
 
         $('.patient-datepicker').datepicker({ format: 'dd/mm/yyyy' }).on('changeDate', function(ev){
             $scope.$apply (function() {

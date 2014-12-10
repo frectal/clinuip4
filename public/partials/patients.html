@@ -5,12 +5,19 @@
                 <p>Male/Female Patients</p>
             </blockquote>
             <div id="chartContainer" style="height: 200px"></div>
+            <br>
+            <blockquote>
+                <p>Query</p>
+            </blockquote>
+            <div>
+                <input ng-model="query" type="text" class="form-control" placeholder="query" style="margin-bottom: 5px">
+            </div>
         </div>
         <div class="col-sm-7 col-md-4">
             <blockquote>
                 <p>Patients<b>{{ chosenGender ? ': ' + chosenGender : '' }}</b></p>
             </blockquote>
-            <div >
+            <div>
                 <input ng-model="patientFilter" type="text" class="form-control" placeholder="filter" style="margin-bottom: 5px">
                 <table class="table table-bordered table-hover table-striped">
                     <thead>
