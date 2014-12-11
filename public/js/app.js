@@ -13,6 +13,9 @@ app.run(function($rootScope, Api) {
 app.config(function ($routeProvider) {
     $routeProvider.when('/', { controller: 'HomeCtrl', templateUrl: 'partials/home.html' });
 	$routeProvider.when('/patients', { controller: 'PatientsCtrl', templateUrl: 'partials/patients.html' });
-    $routeProvider.when('/clinicalcontent', { controller: 'ClinicalContentCtrl', templateUrl: 'partials/clinicalContent.html' });
+    $routeProvider.when('/clinicalcontent', {
+        controller: 'ClinicalContentCtrl',
+        templateUrl: 'partials/clinicalContent.html'
+    });
     $routeProvider.otherwise({ redirectTo: '/' });
 });

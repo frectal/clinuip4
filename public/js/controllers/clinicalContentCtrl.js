@@ -1,11 +1,15 @@
 'use strict';
 
 angular.module('clinuip')
-    .controller('ClinicalContentCtrl', function UsersCtrl($scope, $rootScope, Api, $routeParams) {
+    .controller('ClinicalContentCtrl', function UsersCtrl($scope, $rootScope, Api) {
 
         $scope.contentLines = "";
 
         $scope.current = {};
+
+        Api.Contents.query(function(data) {
+            $rootScope.contents = data;
+        });
 
         $scope.saveContent = function (content) {
             content.contents = $scope.contentLines.split('\n');
