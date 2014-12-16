@@ -21,17 +21,17 @@ var Patients = function Patients(passport) {
     this.router.get('/', function (req, res) {
         var gender = req.param('gender'),
             search = req.param('search'),
-            query  = req.param('query');
+            query  = req.param('query'),
+            regex = new RegExp(query, 'i');
 
         // Select 'male' or 'female' patients
-        if (gender) {
+        if (gender || query) {
             if (search) {
                 Patient.search(gender.toLowerCase(), search, function (err, data) {
                     res.json(data);
                 });
             } else {
-                if (query && query !== "") {
-                    var regex = new RegExp(query, 'i');
+                if (gender && query && query !== "") {
                     Patient
                         .find({ 'details.details': { $regex: regex } })
                         .where('sex').equals(gender.toLowerCase())
@@ -41,9 +41,19 @@ var Patients = function Patients(passport) {
                             res.json(data);
                         });
                 } else {
-                    Patient.getByGender(gender.toLowerCase(), function (err, data) {
-                        res.json(data);
-                    });
+                    if (!gender && query && query !== "") {
+                        Patient
+                            .find({ 'details.details': { $regex: regex } })
+                            .sort('no')
+                            .exec(function (err, data) {
+                                console.log(data);
+                                res.json(data);
+                            });
+                    } else {
+                        Patient.getByGender(gender.toLowerCase(), function (err, data) {
+                            res.json(data);
+                        });
+                    }
                 }
             }
         }

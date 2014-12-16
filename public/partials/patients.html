@@ -7,10 +7,16 @@
             <div id="chartContainer" style="height: 200px"></div>
             <br>
             <blockquote>
-                <p>Query</p>
+                <p>Search</p>
             </blockquote>
             <div>
+                <select class="form-control" ng-model="chosenGender" style="margin-bottom: 10px">
+                    <option value="">Female & Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
                 <input ng-model="query" type="text" class="form-control" placeholder="query" style="margin-bottom: 5px">
+                <button type="button" class="btn btn-info pull-right" ng-if="false">search</button>
             </div>
         </div>
         <div class="col-sm-7 col-md-4">

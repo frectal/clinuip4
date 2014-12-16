@@ -3,7 +3,7 @@
 angular.module('clinuip')
     .controller('PatientsCtrl', function PatientsCtrl($scope, $rootScope, Patients, Api) {
 
-        $scope.chosenGender = null;
+        $scope.chosenGender = "";
         $scope.selectedPatient = null;
         $scope.patients = [];
         $scope.details = [];
@@ -12,6 +12,7 @@ angular.module('clinuip')
         $scope.detailFilter = null;
         $scope.patientModal = {};
         $scope.notes = '';
+        $scope.query = '';
 
         var chartData = [
             { y: 50, name: "Male" },
@@ -28,7 +29,7 @@ angular.module('clinuip')
         loadPatientsPercentage();
 
         $scope.$watch('patientFilter', function (newValue) {
-            Patients.query({ gender : $scope.chosenGender, search : newValue}, function (data) {
+            Patients.query({ gender : $scope.chosenGender, search : newValue, query: $scope.query}, function (data) {
                 $scope.patients = data;
             });
         }, true);
@@ -50,15 +51,14 @@ angular.module('clinuip')
         }
 
         $scope.$watch('chosenGender', function (newValue) {
+            $scope.patients = [];
             if (newValue && ['male', 'female'].indexOf(newValue.toLowerCase()) !== -1) {
                 loadPatients(newValue.toLowerCase(), $scope.query);
             }
         }, true);
 
         $scope.$watch('query', function (newValue) {
-            if ($scope.chosenGender) {
-                loadPatients($scope.chosenGender.toLowerCase(), newValue);
-            }
+            loadPatients($scope.chosenGender.toLowerCase(), newValue);
         }, true);
 
         $scope.$watch('countMaleFemale', function () {
@@ -163,11 +163,13 @@ angular.module('clinuip')
             data: [
                 {
                     type: "pie",
+                    /*
                     click: function(e){
                         $scope.$apply (function() {
                             $scope.chosenGender = e.dataPoint.name;
                         });
                     },
+                    */
                     indexLabelPlacement: "inside",
                     toolTipContent: "{name}: {y} %",
                     dataPoints: chartData
