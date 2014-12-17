@@ -51,7 +51,10 @@ angular.module('clinuip')
                 $scope.queryLabel = query;
 
                 if (gender && ['male', 'female'].indexOf(gender.toLowerCase()) !== -1) {
-                    loadPatients(gender.toLowerCase(), $scope.query);
+                    //loadPatients(gender.toLowerCase(), $scope.query);
+                    Patients.query({ gender: gender.toLowerCase(), query: query }, function (data) {
+                        $scope.patients = data;
+                    });
                 } else {
                     Patients.query({ query: query }, function (data) {
                         $scope.patients = data;
