@@ -37,7 +37,6 @@ var Patients = function Patients(passport) {
                         .where('sex').equals(gender.toLowerCase())
                         .sort('no')
                         .exec(function (err, data) {
-                            console.log(data);
                             res.json(data);
                         });
                 } else {
@@ -46,7 +45,6 @@ var Patients = function Patients(passport) {
                             .find({ 'details.details': { $regex: regex } })
                             .sort('no')
                             .exec(function (err, data) {
-                                console.log(data);
                                 res.json(data);
                             });
                     } else {
@@ -128,7 +126,6 @@ var Patients = function Patients(passport) {
     this.router.post('/:id/details', function (req, res) {
         if (req.body._id) {
             Patient.updateDetails(req.body, function (err, savedData) {
-                console.log(savedData);
                 res.json(null);
             });
         } else {

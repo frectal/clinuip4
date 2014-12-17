@@ -43,13 +43,24 @@ angular.module('clinuip')
         }, true);
 
         function loadPatients(gender, query) {
-            $scope.details = [];
-            $scope.selectedPatient = null;
-            Patients.query({ gender : gender, query: query }, function (data) {
-                $scope.patients = data;
-            });
+            if ((gender || query) && (gender !== '' || query !== '')) {
+                $scope.details = [];
+                $scope.selectedPatient = null;
+                $scope.patients = [];
+
+                $scope.queryLabel = query;
+
+                if (gender && ['male', 'female'].indexOf(gender.toLowerCase()) !== -1) {
+                    loadPatients(gender.toLowerCase(), $scope.query);
+                } else {
+                    Patients.query({ query: query }, function (data) {
+                        $scope.patients = data;
+                    });
+                }
+            }
         }
 
+        /*
         $scope.$watch('chosenGender', function (newValue) {
             $scope.patients = [];
             if (newValue && ['male', 'female'].indexOf(newValue.toLowerCase()) !== -1) {
@@ -60,6 +71,7 @@ angular.module('clinuip')
         $scope.$watch('query', function (newValue) {
             loadPatients($scope.chosenGender.toLowerCase(), newValue);
         }, true);
+        */
 
         $scope.$watch('countMaleFemale', function () {
             renderChart();
@@ -163,13 +175,13 @@ angular.module('clinuip')
             data: [
                 {
                     type: "pie",
-                    /*
+
                     click: function(e){
                         $scope.$apply (function() {
                             $scope.chosenGender = e.dataPoint.name;
+                            loadPatients($scope.chosenGender.toLowerCase(), $scope.query);
                         });
                     },
-                    */
                     indexLabelPlacement: "inside",
                     toolTipContent: "{name}: {y} %",
                     dataPoints: chartData
@@ -267,5 +279,14 @@ angular.module('clinuip')
             $('.detail-datepicker').datepicker('hide');
         });
 
+        $scope.clear = function () {
+            $scope.query = "";
+            $scope.chosenGender = "";
+            $scope.queryLabel = "";
+        }
+
+        $scope.search = function () {
+            loadPatients($scope.chosenGender.toLowerCase(), $scope.query);
+        };
 
     });

@@ -16,12 +16,13 @@
                     <option value="Male">Male</option>
                 </select>
                 <input ng-model="query" type="text" class="form-control" placeholder="query" style="margin-bottom: 5px">
-                <button type="button" class="btn btn-info pull-right" ng-if="false">search</button>
+                <button ng-click="search()" type="button" class="btn btn-info pull-right">search</button>
+                <button ng-click="clear()" type="button" class="btn btn-primary pull-right" style="margin-right: 10px">clear</button>
             </div>
         </div>
         <div class="col-sm-7 col-md-4">
             <blockquote>
-                <p>Patients<b>{{ chosenGender ? ': ' + chosenGender : '' }}</b></p>
+                <p>Patients<b>{{ chosenGender ? ': ' + chosenGender : '' }} {{ queryLabel ? (chosenGender ? ' + ' : '') + queryLabel : ''}}</b></p>
             </blockquote>
             <div>
                 <input ng-model="patientFilter" type="text" class="form-control" placeholder="filter" style="margin-bottom: 5px">
