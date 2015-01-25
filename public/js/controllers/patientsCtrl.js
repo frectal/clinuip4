@@ -3,20 +3,31 @@
 angular.module('clinuip')
     .controller('PatientsCtrl', function PatientsCtrl($scope, $rootScope, Patients, Api) {
 
+        $scope.query = '';           // left query textbox
+        $scope.patientFilter = null; // midle filter textbox
+        $scope.age = null;           // selected age range
+
         $scope.chosenGender = "";
         $scope.selectedPatient = null;
         $scope.patients = [];
         $scope.details = [];
         $scope.countMaleFemale = { male: 0, female : 0 };
-        $scope.patientFilter = null;
+
         $scope.detailFilter = null;
         $scope.patientModal = {};
         $scope.notes = '';
-        $scope.query = '';
+
+        $scope.moment = moment;
 
         var chartData = [
             { y: 50, name: "Male" },
             { y: 50, name: "Female" }
+        ];
+
+        var ageData = [
+            {y: 0, label: "0-30", id:"age30"},
+            {y: 0,  label: "31-60", id:"age60" },
+            {y: 0,  label: "61-100+", id:"age100"}
         ];
 
 
@@ -27,6 +38,15 @@ angular.module('clinuip')
             });
         }
         loadPatientsPercentage();
+
+        function loadPatientsAge() {
+            Patients.get({ agecount : true }, function (data) {
+                ageData[0].y = data.age30;
+                ageData[1].y = data.age60;
+                ageData[2].y = data.age100;
+            });
+        }
+        loadPatientsAge();
 
         $scope.$watch('patientFilter', function (newValue) {
             Patients.query({ gender : $scope.chosenGender, search : newValue, query: $scope.query}, function (data) {
@@ -42,39 +62,41 @@ angular.module('clinuip')
             }
         }, true);
 
-        function loadPatients(gender, query) {
-            if ((gender || query) && (gender !== '' || query !== '')) {
+        function loadPatients() {
+            var query = $scope.query,
+                age = $scope.age ? $scope.age.id : '',
+                filter = $scope.patientFilter || '',
+                gender = $scope.chosenGender ? $scope.chosenGender.toLowerCase() : null;
+
+            var apiQuery = {};
+
+            if (age && age !== '') {
+                apiQuery.age = age;
+            }
+
+            if (filter && filter !== '') {
+                apiQuery.filter = filter;
+            }
+
+            if (gender && ['male', 'female'].indexOf(gender) !== -1) {
+                apiQuery.gender =  gender;
+            }
+
+            if (query && query !== '') {
+                apiQuery.query = query;
+            }
+
+            if (apiQuery.age || apiQuery.gender || apiQuery.query || apiQuery.filter) {
                 $scope.details = [];
                 $scope.selectedPatient = null;
                 $scope.patients = [];
-
                 $scope.queryLabel = query;
 
-                if (gender && ['male', 'female'].indexOf(gender.toLowerCase()) !== -1) {
-                    //loadPatients(gender.toLowerCase(), $scope.query);
-                    Patients.query({ gender: gender.toLowerCase(), query: query }, function (data) {
-                        $scope.patients = data;
-                    });
-                } else {
-                    Patients.query({ query: query }, function (data) {
-                        $scope.patients = data;
-                    });
-                }
+                Patients.query(apiQuery, function (data) {
+                    $scope.patients = data;
+                });
             }
         }
-
-        /*
-        $scope.$watch('chosenGender', function (newValue) {
-            $scope.patients = [];
-            if (newValue && ['male', 'female'].indexOf(newValue.toLowerCase()) !== -1) {
-                loadPatients(newValue.toLowerCase(), $scope.query);
-            }
-        }, true);
-
-        $scope.$watch('query', function (newValue) {
-            loadPatients($scope.chosenGender.toLowerCase(), newValue);
-        }, true);
-        */
 
         $scope.$watch('countMaleFemale', function () {
             renderChart();
@@ -98,7 +120,7 @@ angular.module('clinuip')
         $scope.savePatient = function (patient) {
             Api.Patients.save(patient, function (data) {
                 loadPatientsPercentage();
-                loadPatients($scope.chosenGender);
+                loadPatients();
 
                 $('#form-add-patient').modal('hide');
             });
@@ -109,12 +131,11 @@ angular.module('clinuip')
                 if (result) {
                     Api.Patients.del({id : patient._id }, function (data) {
                         loadPatientsPercentage();
-                        loadPatients($scope.chosenGender);
+                        loadPatients();
                     });
                 }
             });
         };
-
 
         $scope.showDetails = function (patient) {
             $scope.selectedPatient = patient;
@@ -132,7 +153,6 @@ angular.module('clinuip')
             $('#form-add-details').modal({});
         };
 
-        //$scope.contentLines = '123';
         $scope.editDetails = function (details) {
             $('.add-notes').val('');
             $scope.detailsModalTitle = 'Edit Patient Data';
@@ -173,7 +193,6 @@ angular.module('clinuip')
             });
         };
 
-        // Create chart component
         var chart = new CanvasJS.Chart("chartContainer", {
             data: [
                 {
@@ -182,7 +201,7 @@ angular.module('clinuip')
                     click: function(e){
                         $scope.$apply (function() {
                             $scope.chosenGender = e.dataPoint.name;
-                            loadPatients($scope.chosenGender.toLowerCase(), $scope.query);
+                            loadPatients();
                         });
                     },
                     indexLabelPlacement: "inside",
@@ -191,6 +210,26 @@ angular.module('clinuip')
                 }
             ]
         });
+
+        var chartAge = new CanvasJS.Chart("chartContainerAge",
+            {
+                axisY:{
+                    title: ""
+                },
+                data: [
+                    {
+                        type: "column",
+                        click: function(e){
+                            $scope.$apply (function() {
+                                $scope.age = e.dataPoint;
+                                loadPatients();
+                            });
+                        },
+                        dataPoints: ageData
+                    }
+                ]
+            });
+
 
         function renderChart() {
             var total = $scope.countMaleFemale.male + $scope.countMaleFemale.female;
@@ -289,7 +328,13 @@ angular.module('clinuip')
         }
 
         $scope.search = function () {
-            loadPatients($scope.chosenGender.toLowerCase(), $scope.query);
+            loadPatients();
         };
+
+        $('#myTabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            chartAge.render();
+        })
 
     });

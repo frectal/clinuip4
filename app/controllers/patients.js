@@ -1,6 +1,7 @@
 'use strict';
 
 var express = require('express'),
+    moment = require('moment'),
     Patient = require('../models').Patient;
 
 var Patients = function Patients(passport) {
@@ -22,10 +23,64 @@ var Patients = function Patients(passport) {
         var gender = req.param('gender'),
             search = req.param('search'),
             query  = req.param('query'),
+            age    = req.param('age'),
             regex = new RegExp(query, 'i');
 
+        var start30 = moment().add(-30, 'y'),
+            end30 = moment(),
+            start60 = moment().add(-60, 'y'),
+            end60 = moment().add(-30, 'y').add(-1, 'm'),
+            start100 = moment().add(-150, 'y'),
+            end100 = moment().add(-60, 'y').add(-1, 'm');
+
+        if (gender || query || age ) {
+            var q = Patient.find();
+            if (gender) {
+                q.where({ sex : gender.toLowerCase() });
+            }
+            if (search) {
+                var regex = new RegExp(search, 'i');
+                q.or([
+                    { 'name' : { $regex: regex } },
+                    { 'sex' : { $regex: regex } },
+                    { 'dob' : { $regex: regex } }
+                ]);
+            }
+            if (age) {
+                if (age === "age30") {
+                    q.where({"dob":{ "$gte": start30, "$lt":end30 }});
+                }
+                if (age === "age60") {
+                    q.where({"dob":{ "$gte": start60, "$lt":end60 }});
+                }
+                if (age === "age100") {
+                    q.where({"dob":{ "$gte": start100, "$lt":end100 }});
+                }
+            }
+
+            q.sort('name').exec(function (err, data) {
+                res.json(data);
+            });
+        } else {
+            // Get count for 'male' and 'female' patients
+            if (req.param('percentage')) {
+                Patient.percentage(function (data) {
+                    res.json(data);
+                });
+            }
+
+            // Get count for 'male' and 'female' patients
+            if (req.param('agecount')) {
+                Patient.age(function (data) {
+                    res.json(data);
+                });
+            }
+        }
+
+        return;
+
         // Select 'male' or 'female' patients
-        if (gender || query) {
+        if (gender || query || age ) {
             if (search) {
                 Patient.search(gender.toLowerCase(), search, function (err, data) {
                     res.json(data);
@@ -54,13 +109,6 @@ var Patients = function Patients(passport) {
                     }
                 }
             }
-        }
-
-        // Get count for 'male' and 'female' patients
-        if (req.param('percentage')) {
-            Patient.percentage(function (data) {
-                res.json(data);
-            });            
         }
     });
 

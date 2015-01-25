@@ -16,7 +16,18 @@ for (var key in controllers) {
     app.use('/api/v1/' + key, controllers[key]().router);
 }
 
+app.get("/test-patients", function (req, res) {
+    var patients = require('./patients.json');
+    //console.log(patients[0]);
+    for (var i = 0; i < patients.length; i++) {
+        var newPatient = new Patient(patients[i]);
 
+        newPatient.save(function (err, patient) {
+
+        });
+    }
+    res.send("finito");
+});
 
 
 // Temp code, create test data

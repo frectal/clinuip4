@@ -2,27 +2,42 @@
     <div class="row">
         <div class="col-sm-5 col-md-3">
             <blockquote>
-                <p>Male/Female Patients</p>
-            </blockquote>
-            <div id="chartContainer" style="height: 200px"></div>
-            <br>
-            <blockquote>
                 <p>Search</p>
             </blockquote>
             <div>
-                <select class="form-control" ng-model="chosenGender" style="margin-bottom: 10px">
-                    <option value="">Female & Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                </select>
                 <input ng-model="query" type="text" class="form-control" placeholder="query" style="margin-bottom: 5px">
                 <button ng-click="search()" type="button" class="btn btn-info pull-right">search</button>
                 <button ng-click="clear()" type="button" class="btn btn-primary pull-right" style="margin-right: 10px">clear</button>
             </div>
+            <br>
+            <br>
+            <br>
+            <div role="tabpanel" id="myTabs">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#sexTab" aria-controls="sexTab" role="tab" data-toggle="tab">By Male/Female</a></li>
+                    <li role="presentation"><a href="#ageTab" aria-controls="ageTab" role="tab" data-toggle="tab">By Age</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="sexTab" style="padding-top: 10px">
+                        <div id="chartContainer" style="height: 200px"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="ageTab" style="padding-top: 10px">
+                        <div id="chartContainerAge" style="height: 200px"></div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-7 col-md-4">
             <blockquote>
-                <p>Patients<b>{{ chosenGender ? ': ' + chosenGender : '' }} {{ queryLabel ? (chosenGender ? ' + ' : '') + queryLabel : ''}}</b></p>
+                <p>
+                    Patients
+                    <b>
+                    {{ chosenGender ? ': ' + chosenGender : '' }}
+                    {{ queryLabel ? (chosenGender ? ' + ' : '') + queryLabel : ''}}
+                    {{ age ? (chosenGender || queryLabel ? ' + ' : '') + 'Age ' + age.label : '' }}
+                    </b></p>
             </blockquote>
             <div>
                 <input ng-model="patientFilter" type="text" class="form-control" placeholder="filter" style="margin-bottom: 5px">
@@ -40,7 +55,7 @@
                         <tr style="cursor: pointer" ng-repeat="patient in patients track by $id($index)" ng-click="showDetails(patient)">
                             <td>{{ patient.name }}</td>
                             <td>{{ patient.sex }}</td>
-                            <td>{{ patient.dob }}</td>
+                            <td>{{ moment(patient.dob).format('DD/MM/YYYY') }}</td>
                             <td><i class="fa fa-pencil-square-o" ng-click="editPatient(patient); $event.stopPropagation();"></i></td>
                             <td><i class="fa fa-times" ng-click="deletePatient(patient); $event.stopPropagation();"></i></td>
                         </tr>

@@ -1,6 +1,8 @@
 'use strict';
 
 var _ = require('underscore'),
+    moment = require('moment'),
+    mongoosePaginate = require('mongoose-paginate'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
@@ -15,11 +17,13 @@ var patientSchema = new Schema({
     identifier: String,
     name: String,
     gender: String,
-    dob: String,
+    dob: Date,
     sex: String,
     author: String,
     details: [detailsSchema]
 });
+
+patientSchema.plugin(mongoosePaginate)
 
 patientSchema.statics.getByGender = function (sex, cb) {
     this.find({ sex : sex })
@@ -32,6 +36,34 @@ patientSchema.statics.percentage = function (cb) {
     that.count({ sex : 'male'}, function (errMale, countMale) {
         that.count({ sex : 'female'}, function (errFemale, countFemale) {
             cb({ male : countMale, female: countFemale });
+        });
+    });
+}
+
+patientSchema.statics.age = function (cb) {
+    var that = this;
+
+    // 0 - 30
+    var start1 = moment().add(-30, 'y');
+    var end1 = moment();
+
+    // 31 - 60
+    var start2 = moment().add(-60, 'y');
+    var end2 = moment().add(-30, 'y').add(-1, 'm');
+
+    // 61 - 100+
+    var start3 = moment().add(-150, 'y');
+    var end3 = moment().add(-60, 'y').add(-1, 'm');
+
+    that.count({"dob":{ "$gte": start1, "$lt":end1 }}, function(err1, count1) {
+        that.count({"dob":{ "$gte": start2, "$lt":end2 }}, function(err2, count2) {
+            that.count({"dob":{ "$gte": start3, "$lt":end3 }}, function(err3, count3) {
+                cb({
+                    age30 : count1,
+                    age60: count2,
+                    age100: count3
+                });
+            });
         });
     });
 }
