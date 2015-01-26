@@ -24,7 +24,7 @@ var Patients = function Patients(passport) {
             search = req.param('search'),
             query  = req.param('query'),
             age    = req.param('age'),
-            regex = new RegExp(query, 'i');
+            regexQuery = new RegExp(query, 'i');
 
         var start30 = moment().add(-30, 'y'),
             end30 = moment(),
@@ -56,6 +56,9 @@ var Patients = function Patients(passport) {
                 if (age === "age100") {
                     q.where({"dob":{ "$gte": start100, "$lt":end100 }});
                 }
+            }
+            if (query) {
+                q.where({ 'details.details': { $regex: regexQuery } });
             }
 
             q.sort('name').exec(function (err, data) {
