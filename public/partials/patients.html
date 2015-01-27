@@ -5,7 +5,7 @@
                 <p>Search</p>
             </blockquote>
             <div>
-                <input ng-model="query" type="text" class="form-control" placeholder="query" style="margin-bottom: 5px">
+                <input ng-model="query" type="text" class="form-control typeahead typeaheadAddNotes" placeholder="query" style="margin-bottom: 5px">
                 <button ng-click="search()" type="button" class="btn btn-info pull-right">search</button>
                 <button ng-click="clear()" type="button" class="btn btn-primary pull-right" style="margin-right: 10px">clear</button>
             </div>
@@ -188,7 +188,7 @@
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Add Notes</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control typeahead add-notes"  />
+                                <input type="text" class="form-control typeahead typeaheadAddNotes add-notes"  />
                             </div>
                         </div>
                         <div class="form-group"  ng-class="{ 'has-error': detailForm.lines.$invalid && detailForm.lines.$dirty }">
@@ -235,8 +235,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
+                            <form class="form-horizontal" role="form" name="detailForm">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" required>Tag</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control typeahead tagsTemplate"/>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top:10px">
+                                    <label class="col-sm-2 control-label" required>Notes</label>
+                                    <div class="col-sm-10">
+                                        <select multiple
+                                                class="form-control"
+                                                style="height: 249px;"
+                                                ng-model="selectedTemplateTagItem"
+                                                ng-change="addNoteFromTag(selectedTemplateTagItem)"
+                                                ng-options="item for item in templateItems">
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                        <div class="col-md-8" style="border-left-width: 4px;border-left-color: rgb(234, 234, 234);border-left-style: solid;">
                             <form class="form-horizontal" role="form" name="detailForm">
                                 <div class="row">
                                     <div class="col-sm-6">

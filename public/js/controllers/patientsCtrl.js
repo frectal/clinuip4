@@ -273,7 +273,7 @@ angular.module('clinuip')
 
             states.initialize();
 
-            $('.typeahead').typeahead({
+            $('.typeaheadAddNotes').typeahead({
                     hint: true,
                     highlight: true,
                     minLength: 1
@@ -285,15 +285,17 @@ angular.module('clinuip')
                 });
         };
 
-        $('.typeahead').on('typeahead:selected', function(event, object, dataset) {
-            $(this).val('');
-            $scope.$apply (function() {
-                $scope.contentLines += object.value + '\n';
-            });
+        $('.typeaheadAddNotes').on('typeahead:selected', function(event, object, dataset) {
+            if ($(event.target).attr('ng-model') === undefined) {
+                $(this).val('');
+                $scope.$apply (function() {
+                    $scope.contentLines += object.value + '\n';
+                });
+            }
         });
 
         $scope.destroyTypeahead = function () {
-            $('.typeahead').typeahead('destroy');
+            $('.typeaheadAddNotes').typeahead('destroy');
         };
 
         $scope.$watch('detailsModal.tags', function (newValue, oldValue) {
@@ -322,6 +324,59 @@ angular.module('clinuip')
                 });
             }
         }, true);
+
+        function createTagTypeahead() {
+            function getAllTags() {
+                var tags = [];
+                _.forEach($rootScope.contents, function(item) {
+                    _.forEach(item.tags, function(tag) {
+                        if (!_.find(tags, { 'value': tag })) {
+                            tags.push({ value : tag })
+                        }
+                    });
+                });
+                return tags;
+            }
+
+            var states = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: getAllTags()
+            });
+            states.initialize();
+
+            var tagTypehead = $('.tagsTemplate').typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: 'states',
+                    displayKey: 'value',
+                    source: states.ttAdapter()
+                });
+
+            tagTypehead.on('typeahead:selected', function(event, object, dataset) {
+                $scope.$apply (function() {
+                    bindTemplateItems(object.value);
+                });
+            });
+        }
+        createTagTypeahead();
+
+        $scope.templateItems = [];
+        function bindTemplateItems(tag) {
+            $scope.templateItems = [];
+            _.forEach($rootScope.contents, function(content) {
+                if (content.tags.indexOf(tag) !== -1) {
+                    _.forEach(content.contents, function(str) {
+                        $scope.templateItems.push(content.name + ' - ' + str);
+                    });
+                }
+            });
+        }
+
+
 
         $('.patient-datepicker').datepicker({ format: 'dd/mm/yyyy' }).on('changeDate', function(ev){
             $scope.$apply (function() {
@@ -358,5 +413,9 @@ angular.module('clinuip')
                 });
             }
         }, true);
+
+        $scope.addNoteFromTag = function(item) {
+            $scope.contentLines += '\n' + item[0];
+        }
 
     });
