@@ -5,7 +5,7 @@
                 <p>Search</p>
             </blockquote>
             <div>
-                <input ng-model="query" type="text" class="form-control typeahead typeaheadAddNotes" placeholder="query" style="margin-bottom: 5px">
+                <input ng-model="query" type="text" class="form-control typeahead typeaheadAddNotes" placeholder="query" style="margin-bottom: 5px; font-size: 13px;">
                 <button ng-click="search()" type="button" class="btn btn-info pull-right">search</button>
                 <button ng-click="clear()" type="button" class="btn btn-primary pull-right" style="margin-right: 10px">clear</button>
             </div>
@@ -52,7 +52,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr style="cursor: pointer" ng-repeat="patient in patients track by $id($index)" ng-click="showDetails(patient)">
+                        <tr style="cursor: pointer" ng-repeat="patient in patients | filter : patientFilter" ng-click="showDetails(patient)">
                             <td>{{ patient.name }}</td>
                             <td>{{ patient.sex }}</td>
                             <td>{{ moment(patient.dob).format('DD/MM/YYYY') }}</td>
@@ -162,7 +162,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">{{ detailsModalTitle }}</h4>
+                    <h4 class="modal-title">{{ detailsModalTitle }} <b>{{ selectedPatient ? ': ' + selectedPatient.name : '' }}</b></h4>
                 </div>
                 <div class="modal-body">
                     <!-- HTML Form for adding new patient details -->
@@ -231,21 +231,21 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">{{ detailsModalTitle }}</h4>
+                    <h4 class="modal-title">{{ detailsModalTitle }} <b>{{ selectedPatient ? ': ' + selectedPatient.name : '' }}</b></h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <form class="form-horizontal" role="form" name="detailForm">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" required>Tag</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control typeahead tagsTemplate"/>
+                                    <label class="col-sm-2 control-label" style="display: none">Tag</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control typeahead tagsTemplate" placeholder="tag" style="font-size: 13px;"/>
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-top:10px">
-                                    <label class="col-sm-2 control-label" required>Notes</label>
-                                    <div class="col-sm-10">
+                                    <label class="col-sm-2 control-label" style="display: none">Notes</label>
+                                    <div class="col-sm-12">
                                         <select multiple
                                                 class="form-control"
                                                 style="height: 249px;"
@@ -256,10 +256,8 @@
                                     </div>
                                 </div>
                             </form>
-
-
                         </div>
-                        <div class="col-md-8" style="border-left-width: 4px;border-left-color: rgb(234, 234, 234);border-left-style: solid;">
+                        <div class="col-md-7" style="border-left-width: 4px;border-left-color: rgb(234, 234, 234);border-left-style: solid;">
                             <form class="form-horizontal" role="form" name="detailForm">
                                 <div class="row">
                                     <div class="col-sm-6">

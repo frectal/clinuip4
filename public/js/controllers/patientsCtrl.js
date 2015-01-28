@@ -111,10 +111,15 @@ angular.module('clinuip')
         $scope.editPatient = function (patient) {
             $scope.patientModalTitle = 'Edit patient';
             $scope.patientModal = angular.copy(patient);
+            $('.patient-datepicker').datepicker('setValue', moment($scope.patientModal.dob));
+            $scope.patientModal.dob = moment($scope.patientModal.dob).format('DD/MM/YYYY');
             $('#form-add-patient').modal({});
         };
 
         $scope.savePatient = function (patient) {
+            if (patient.dob) {
+                patient.dob = moment(patient.dob, 'DD/MM/YYYY').format();
+            }
             Api.Patients.save(patient, function (data) {
                 loadPatientsPercentage();
                 loadPatients();
@@ -185,6 +190,7 @@ angular.module('clinuip')
                     $scope.details.push(angular.copy(details));
                 }
                 $('#form-add-details').modal('hide');
+                $('#form-add-details-template').modal('hide');
             });
         };
 
@@ -291,6 +297,10 @@ angular.module('clinuip')
                 $scope.$apply (function() {
                     $scope.contentLines += object.value + '\n';
                 });
+            } else {
+                $scope.$apply (function() {
+                    $scope.query = object.value;
+                });
             }
         });
 
@@ -356,11 +366,23 @@ angular.module('clinuip')
                     source: states.ttAdapter()
                 });
 
+            var selectedValue = "";
             tagTypehead.on('typeahead:selected', function(event, object, dataset) {
                 $scope.$apply (function() {
+                    selectedValue = object.value;
                     bindTemplateItems(object.value);
                 });
             });
+
+            tagTypehead.on('keyup', function(event) {
+                if (this.value !== selectedValue) {
+                    $scope.$apply (function() {
+                        $scope.templateItems = [];
+                    });
+                }
+            });
+
+
         }
         createTagTypeahead();
 
@@ -375,8 +397,6 @@ angular.module('clinuip')
                 }
             });
         }
-
-
 
         $('.patient-datepicker').datepicker({ format: 'dd/mm/yyyy' }).on('changeDate', function(ev){
             $scope.$apply (function() {
@@ -403,7 +423,7 @@ angular.module('clinuip')
         })
 
         $scope.$watch('patientFilter', function (newValue) {
-            loadPatients();
+            //loadPatients();
         }, true);
 
         $scope.$watch('detailFilter', function (newValue) {
@@ -415,7 +435,7 @@ angular.module('clinuip')
         }, true);
 
         $scope.addNoteFromTag = function(item) {
-            $scope.contentLines += '\n' + item[0];
+            $scope.contentLines +=  item[0] + '\n';
+            $scope.selectedTemplateTagItem = null;
         }
-
     });
