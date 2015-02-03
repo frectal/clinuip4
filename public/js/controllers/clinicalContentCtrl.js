@@ -57,8 +57,11 @@ angular.module('clinuip')
 
         $scope.addContent = function () {
             $scope.detailForm.$setPristine();
-            $scope.current = {};
-            $scope.contentLines;
+
+            $scope.contentLines = "";
+            $scope.tagLines = "";
+            $scope.current.name = "";
+
             $('#myModal').modal();
         };
 

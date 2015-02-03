@@ -52,7 +52,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr style="cursor: pointer" ng-repeat="patient in patients | filter : patientFilter" ng-click="showDetails(patient)">
+                        <tr style="cursor: pointer" ng-repeat="patient in patients | filter : filterPatients" ng-click="showDetails(patient)">
                             <td>{{ patient.name }}</td>
                             <td>{{ patient.sex }}</td>
                             <td>{{ moment(patient.dob).format('DD/MM/YYYY') }}</td>

@@ -121,6 +121,7 @@ angular.module('clinuip')
                 patient.dob = moment(patient.dob, 'DD/MM/YYYY').format();
             }
             Api.Patients.save(patient, function (data) {
+                loadPatientsAge();
                 loadPatientsPercentage();
                 loadPatients();
 
@@ -132,6 +133,7 @@ angular.module('clinuip')
             bootbox.confirm("Are you sure?", function(result) {
                 if (result) {
                     Api.Patients.del({id : patient._id }, function (data) {
+                        loadPatientsAge();
                         loadPatientsPercentage();
                         loadPatients();
                     });
@@ -157,6 +159,9 @@ angular.module('clinuip')
 
         $scope.addDetailsTemplate = function () {
             $('.add-notes').val('');
+            $('.tagsTemplate').val('');
+            $scope.selectedTemplateTagItem = null;
+            $scope.templateItems = [];
             $scope.detailForm.$setPristine();
             $scope.detailsModalTitle = 'Add Patient Data by Template';
             $scope.contentLines = '';
@@ -260,6 +265,20 @@ angular.module('clinuip')
             chart.render();
         }
 
+        function addNewNoteLine(note) {
+            $scope.contentLines = $scope.contentLines ? $scope.contentLines.trim() : "";
+            var latestLine = $scope.contentLines.split("\n");
+            if (latestLine.length > 0 && latestLine[latestLine.length-1] === note) {
+                return;
+            }
+
+            if ($scope.contentLines) {
+                $scope.contentLines += '\n' + note;
+            } else {
+                $scope.contentLines = note;
+            }
+        }
+
         $scope.initTypeahead = function () {
             function getAllItems() {
                 var items = [];
@@ -279,7 +298,7 @@ angular.module('clinuip')
 
             states.initialize();
 
-            $('.typeaheadAddNotes').typeahead({
+            var notesTypehead = $('.typeaheadAddNotes').typeahead({
                     hint: true,
                     highlight: true,
                     minLength: 1
@@ -289,13 +308,29 @@ angular.module('clinuip')
                     displayKey: 'value',
                     source: states.ttAdapter()
                 });
+
+            notesTypehead.on('keyup', function(event) {
+                var that = this;
+                if (event.keyCode === 13) {
+                    if ($(event.target).attr('ng-model') === undefined) {
+                        $scope.$apply (function() {
+                            addNewNoteLine(that.value);
+                        });
+                    } else {
+                        $scope.$apply (function() {
+                            $scope.query = that.value;
+                        });
+                    }
+                }
+            });
         };
+
+
 
         $('.typeaheadAddNotes').on('typeahead:selected', function(event, object, dataset) {
             if ($(event.target).attr('ng-model') === undefined) {
-                $(this).val('');
                 $scope.$apply (function() {
-                    $scope.contentLines += object.value + '\n';
+                    addNewNoteLine(object.value);
                 });
             } else {
                 $scope.$apply (function() {
@@ -381,8 +416,6 @@ angular.module('clinuip')
                     });
                 }
             });
-
-
         }
         createTagTypeahead();
 
@@ -435,7 +468,21 @@ angular.module('clinuip')
         }, true);
 
         $scope.addNoteFromTag = function(item) {
-            $scope.contentLines +=  item[0] + '\n';
-            $scope.selectedTemplateTagItem = null;
+            if (item.length > 0) {
+                addNewNoteLine(item[0]);
+                $scope.selectedTemplateTagItem = null;
+            }
         }
+
+        $scope.filterPatients = function (item){
+            if (!$scope.patientFilter) {
+                return true;
+            }
+            if (item.name.toLowerCase().indexOf($scope.patientFilter) != -1 ||
+                item.sex.toLowerCase().indexOf($scope.patientFilter) != -1 ||
+                moment(item.dob).format('DD/MM/YYYY').indexOf($scope.patientFilter) != -1) {
+                return true;
+            }
+            return false;
+        };
     });
