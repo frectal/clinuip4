@@ -26,6 +26,21 @@ var Patients = function Patients(passport) {
             age    = req.param('age'),
             regexQuery = new RegExp(query, 'i');
 
+        if (req.param('percentage')) {
+            Patient.percentage(query, function (data) {
+                console.log(data);
+                res.json(data);
+            });
+            return;
+        }
+
+        if (req.param('agecount')) {
+            Patient.age(query, function (data) {
+                res.json(data);
+            });
+            return;
+        }
+
         var start30 = moment().add(-30, 'y'),
             end30 = moment(),
             start60 = moment().add(-60, 'y'),
@@ -64,54 +79,6 @@ var Patients = function Patients(passport) {
             q.sort('name').exec(function (err, data) {
                 res.json(data);
             });
-        } else {
-            // Get count for 'male' and 'female' patients
-            if (req.param('percentage')) {
-                Patient.percentage(function (data) {
-                    res.json(data);
-                });
-            }
-
-            // Get count for 'male' and 'female' patients
-            if (req.param('agecount')) {
-                Patient.age(function (data) {
-                    res.json(data);
-                });
-            }
-        }
-
-        return;
-
-        // Select 'male' or 'female' patients
-        if (gender || query || age ) {
-            if (search) {
-                Patient.search(gender.toLowerCase(), search, function (err, data) {
-                    res.json(data);
-                });
-            } else {
-                if (gender && query && query !== "") {
-                    Patient
-                        .find({ 'details.details': { $regex: regex } })
-                        .where('sex').equals(gender.toLowerCase())
-                        .sort('no')
-                        .exec(function (err, data) {
-                            res.json(data);
-                        });
-                } else {
-                    if (!gender && query && query !== "") {
-                        Patient
-                            .find({ 'details.details': { $regex: regex } })
-                            .sort('no')
-                            .exec(function (err, data) {
-                                res.json(data);
-                            });
-                    } else {
-                        Patient.getByGender(gender.toLowerCase(), function (err, data) {
-                            res.json(data);
-                        });
-                    }
-                }
-            }
         }
     });
 

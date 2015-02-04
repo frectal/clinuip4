@@ -27,6 +27,8 @@ angular.module('clinuip')
             $scope.age = null;
 
             loadPatients();
+            loadPatientsPercentage();
+            loadPatientsAge();
         }
 
         var chartData = [
@@ -41,20 +43,21 @@ angular.module('clinuip')
         ];
 
         function loadPatientsPercentage() {
-            Patients.get({ percentage : true }, function (data) {
+            Patients.get({ percentage : true, query: $scope.query }, function (data) {
                 $scope.countMaleFemale.female = data.female;
                 $scope.countMaleFemale.male = data.male;
             });
         }
-        loadPatientsPercentage();
 
         function loadPatientsAge() {
-            Patients.get({ agecount : true }, function (data) {
+            Patients.get({ agecount : true, query: $scope.query }, function (data) {
                 ageData[0].y = data.age30;
                 ageData[1].y = data.age60;
                 ageData[2].y = data.age100;
             });
         }
+
+        loadPatientsPercentage();
         loadPatientsAge();
 
         function loadPatients() {
@@ -216,7 +219,6 @@ angular.module('clinuip')
             data: [
                 {
                     type: "pie",
-
                     click: function(e){
                         $scope.$apply (function() {
                             if ($scope.chosenGender === e.dataPoint.name) {
@@ -319,6 +321,9 @@ angular.module('clinuip')
                     } else {
                         $scope.$apply (function() {
                             $scope.query = that.value;
+                            notesTypehead.trigger('blur');
+                            notesTypehead.focus();
+                            $scope.search();
                         });
                     }
                 }
@@ -446,18 +451,19 @@ angular.module('clinuip')
         });
 
         $scope.search = function () {
+            $scope.chosenGender = null;
+            $scope.age = null;
             loadPatients();
+            loadPatientsPercentage();
+            loadPatientsAge();
         };
 
         $('#myTabs a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
             chartAge.render();
-        })
-
-        $scope.$watch('patientFilter', function (newValue) {
-            //loadPatients();
-        }, true);
+            chart.render();
+        });
 
         $scope.$watch('detailFilter', function (newValue) {
             if ($scope.selectedPatient) {
