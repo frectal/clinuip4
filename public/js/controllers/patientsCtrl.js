@@ -26,6 +26,9 @@ angular.module('clinuip')
             $scope.patientFilter = null;
             $scope.age = null;
 
+            $scope.selectedPatient = null;
+            $scope.details = [];
+
             loadPatients();
             loadPatientsPercentage();
             loadPatientsAge();
