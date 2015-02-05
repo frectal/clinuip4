@@ -55,7 +55,7 @@
                         <tr style="cursor: pointer" ng-repeat="patient in patients | filter : filterPatients" ng-click="showDetails(patient)">
                             <td>{{ patient.name }}</td>
                             <td>{{ patient.sex }}</td>
-                            <td>{{ moment(patient.dob).format() }}</td>
+                            <td>{{ moment(patient.dob).format('DD/MM/YYYY') }}</td>
                             <td><i class="fa fa-pencil-square-o" ng-click="editPatient(patient); $event.stopPropagation();"></i></td>
                             <td><i class="fa fa-times" ng-click="deletePatient(patient); $event.stopPropagation();"></i></td>
                         </tr>
