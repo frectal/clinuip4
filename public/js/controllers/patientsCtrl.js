@@ -49,6 +49,7 @@ angular.module('clinuip')
             Patients.get({ percentage : true, query: $scope.query }, function (data) {
                 $scope.countMaleFemale.female = data.female;
                 $scope.countMaleFemale.male = data.male;
+                chart.render();
             });
         }
 
@@ -57,6 +58,7 @@ angular.module('clinuip')
                 ageData[0].y = data.age30;
                 ageData[1].y = data.age60;
                 ageData[2].y = data.age100;
+                chartAge.render();
             });
         }
 
@@ -124,7 +126,7 @@ angular.module('clinuip')
 
         $scope.savePatient = function (patient) {
             if (patient.dob) {
-                patient.dob = moment(patient.dob, 'DD/MM/YYYY').format();
+                patient.dob = moment(patient.dob, 'DD/MM/YYYY').hour(0).minute(1).second(1).format();
             }
             Api.Patients.save(patient, function (data) {
                 loadPatientsAge();

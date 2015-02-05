@@ -55,16 +55,16 @@ patientSchema.statics.age = function (query, cb) {
     var regexQuery = new RegExp(query, 'i');
 
     // 0 - 30
-    var start1 = moment().add(-30, 'y');
-    var end1 = moment();
+    var start1 = moment().add(-30, 'y').hour(0).minute(-1).second(0);
+    var end1 = moment().hour(23).minute(59).second(59);
 
     // 31 - 60
-    var start2 = moment().add(-60, 'y');
-    var end2 = moment().add(-30, 'y').add(-1, 'm');
+    var start2 = moment().add(-60, 'y').hour(0).minute(-1).second(0);
+    var end2 = moment().add(-30, 'y').add(-1, 'm').hour(23).minute(59).second(59);
 
     // 61 - 100+
-    var start3 = moment().add(-150, 'y');
-    var end3 = moment().add(-60, 'y').add(-1, 'm');
+    var start3 = moment().add(-150, 'y').hour(0).minute(0).second(0);
+    var end3 = moment().add(-60, 'y').add(-1, 'm').hour(23).minute(59).second(59);
 
     if (query) {
         that.count({"dob":{ "$gte": start1, "$lt":end1 }, 'details.details': { $regex: regexQuery }}, function(err1, count1) {

@@ -28,7 +28,6 @@ var Patients = function Patients(passport) {
 
         if (req.param('percentage')) {
             Patient.percentage(query, function (data) {
-                console.log(data);
                 res.json(data);
             });
             return;
@@ -41,12 +40,17 @@ var Patients = function Patients(passport) {
             return;
         }
 
-        var start30 = moment().add(-30, 'y'),
-            end30 = moment(),
-            start60 = moment().add(-60, 'y'),
-            end60 = moment().add(-30, 'y').add(-1, 'm'),
-            start100 = moment().add(-150, 'y'),
-            end100 = moment().add(-60, 'y').add(-1, 'm');
+        // 0 - 30
+        var start1 = moment().add(-30, 'y').hour(0).minute(0).second(0);
+        var end1 = moment().hour(23).minute(59).second(59);
+
+        // 31 - 60
+        var start2 = moment().add(-60, 'y').hour(0).minute(0).second(0);
+        var end2 = moment().add(-30, 'y').add(-1, 'm').hour(23).minute(59).second(59);
+
+        // 61 - 100+
+        var start3 = moment().add(-150, 'y').hour(0).minute(0).second(0);
+        var end3 = moment().add(-60, 'y').add(-1, 'm').hour(23).minute(59).second(59);
 
         if (gender || query || age ) {
             var q = Patient.find();
@@ -63,13 +67,13 @@ var Patients = function Patients(passport) {
             }
             if (age) {
                 if (age === "age30") {
-                    q.where({"dob":{ "$gte": start30, "$lt":end30 }});
+                    q.where({"dob":{ "$gte": start1, "$lt":end1 }});
                 }
                 if (age === "age60") {
-                    q.where({"dob":{ "$gte": start60, "$lt":end60 }});
+                    q.where({"dob":{ "$gte": start2, "$lt":end2 }});
                 }
                 if (age === "age100") {
-                    q.where({"dob":{ "$gte": start100, "$lt":end100 }});
+                    q.where({"dob":{ "$gte": start3, "$lt":end3 }});
                 }
             }
             if (query) {
@@ -77,6 +81,7 @@ var Patients = function Patients(passport) {
             }
 
             q.sort('name').exec(function (err, data) {
+                console.log(data);
                 res.json(data);
             });
         }
