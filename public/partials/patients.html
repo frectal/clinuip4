@@ -5,7 +5,7 @@
                 <p>Search</p>
             </blockquote>
             <div>
-                <input ng-model="query" type="text" class="form-control typeahead typeaheadAddNotes" placeholder="query" style="margin-bottom: 5px; font-size: 13px;">
+                <input ng-model="query" type="text" class="form-control typeahead queryTypehead" placeholder="query" style="margin-bottom: 5px; font-size: 13px;">
                 <button ng-click="search()" type="button" class="btn btn-info pull-right">search</button>
                 <button ng-click="clear()" type="button" class="btn btn-primary pull-right" style="margin-right: 10px">clear</button>
             </div>
@@ -180,7 +180,7 @@
                                 <div class="form-group">
                                     <label for="name" class="col-sm-4 control-label">Tag(s)</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control tags" ng-model="detailsModal.tags" name="tags" />
+                                        <input type="text" class="form-control tags" ng-model="detailsModal.tags" ng-model-options="{ debounce: 1000 }" name="tags" />
                                     </div>
                                 </div>
                             </div>

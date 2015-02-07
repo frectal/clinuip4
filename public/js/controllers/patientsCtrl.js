@@ -162,6 +162,7 @@ angular.module('clinuip')
             $scope.detailsModal = {
                 date: moment().format('DD/MM/YYYY')
             };
+            createTagPatientData(_.clone($rootScope.contents));
             $('#form-add-details').modal({});
         };
 
@@ -184,6 +185,7 @@ angular.module('clinuip')
             $scope.detailsModalTitle = 'Edit Patient Data';
             $scope.contentLines = details.details.join('\n');
             $scope.detailsModal = angular.copy(details);
+            createTagPatientData(_.clone($rootScope.contents));
             $('#form-add-details').modal({});
         };
 
@@ -286,10 +288,31 @@ angular.module('clinuip')
             }
         }
 
-        $scope.initTypeahead = function () {
+        $scope.$watch("detailsModal.tags", _.debounce(function (newValue, oldValue) {
+            var tags = [];
+            if (newValue && newValue !== "") {
+                _(newValue.split(',')).forEach(function(item) {
+                    if (item.trim() !== "") {
+                        tags.push(item.trim())
+                    }
+                });
+
+                if (tags.length > 0) {
+                    Api.Contents.contents({tag : tags.join(',')}, function (data) {
+                        createTagPatientData(_.clone(data));
+                    });
+                }
+            } else {
+                createTagPatientData(_.clone($rootScope.contents));
+            }
+        }, 1000));
+
+        function createTagPatientData(contents) {
+            $('.typeaheadAddNotes').typeahead('destroy');
+
             function getAllItems() {
                 var items = [];
-                _.forEach($rootScope.contents, function(item) {
+                _.forEach(contents, function(item) {
                     _.forEach(item.contents, function(content) {
                         items.push({ value : item.name + ' - ' + content });
                     });
@@ -319,66 +342,19 @@ angular.module('clinuip')
             notesTypehead.on('keyup', function(event) {
                 var that = this;
                 if (event.keyCode === 13) {
-                    if ($(event.target).attr('ng-model') === undefined) {
-                        $scope.$apply (function() {
-                            addNewNoteLine(that.value);
-                        });
-                    } else {
-                        $scope.$apply (function() {
-                            $scope.query = that.value;
-                            notesTypehead.trigger('blur');
-                            notesTypehead.focus();
-                            $scope.search();
-                        });
-                    }
+                    $scope.$apply (function() {
+                        addNewNoteLine(that.value);
+                    });
                 }
             });
-        };
 
-
-
-        $('.typeaheadAddNotes').on('typeahead:selected', function(event, object, dataset) {
-            if ($(event.target).attr('ng-model') === undefined) {
+            notesTypehead.on('typeahead:selected', function(event, object, dataset) {
                 $scope.$apply (function() {
                     addNewNoteLine(object.value);
                 });
-            } else {
-                $scope.$apply (function() {
-                    $scope.query = object.value;
-                });
-            }
-        });
-
-        $scope.destroyTypeahead = function () {
-            $('.typeaheadAddNotes').typeahead('destroy');
-        };
-
-        $scope.$watch('detailsModal.tags', function (newValue, oldValue) {
-            $scope.destroyTypeahead();
-
-            var tags = [];
-            if (newValue && newValue !== "") {
-                _(newValue.split(',')).forEach(function(item) {
-                    if (item.trim() !== "") {
-                        tags.push(item.trim())
-                    }
-                });
-
-                if (tags.length > 0) {
-                    Api.Contents.contents({tag : tags.join(',')}, function (data) {
-                        $rootScope.contents = data;
-                        $scope.initTypeahead();
-                    });
-                } else {
-                    $scope.initTypeahead();
-                }
-            } else {
-                Api.Contents.query(function(data) {
-                    $rootScope.contents = data;
-                    $scope.initTypeahead();
-                });
-            }
-        }, true);
+            });
+        }
+        createTagPatientData(_.clone($rootScope.contents));
 
         function createTagTypeahead() {
             function getAllTags() {
@@ -428,6 +404,56 @@ angular.module('clinuip')
             });
         }
         createTagTypeahead();
+
+        function createQueryTypehead() {
+            function getAllItems() {
+                var items = [];
+                _.forEach($rootScope.contents, function(item) {
+                    _.forEach(item.contents, function(content) {
+                        items.push({ value : item.name + ' - ' + content });
+                    });
+                });
+                return items;
+            }
+
+            var states = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: getAllItems()
+            });
+
+            states.initialize();
+
+            var notesTypehead = $('.queryTypehead').typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: 'states',
+                    displayKey: 'value',
+                    source: states.ttAdapter()
+                });
+
+            notesTypehead.on('keyup', function(event) {
+                var that = this;
+                if (event.keyCode === 13) {
+                    $scope.$apply (function() {
+                        $scope.query = that.value;
+                        notesTypehead.trigger('blur');
+                        notesTypehead.focus();
+                        $scope.search();
+                    });
+                }
+            });
+
+            notesTypehead.on('typeahead:selected', function(event, object, dataset) {
+                $scope.$apply (function() {
+                    $scope.query = object.value;
+                });
+            });
+        }
+        createQueryTypehead();
 
         $scope.templateItems = [];
         function bindTemplateItems(tag) {

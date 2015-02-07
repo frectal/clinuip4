@@ -81,7 +81,6 @@ var Patients = function Patients(passport) {
             }
 
             q.sort('name').exec(function (err, data) {
-                console.log(data);
                 res.json(data);
             });
         }
