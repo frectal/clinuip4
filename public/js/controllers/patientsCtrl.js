@@ -21,6 +21,7 @@ angular.module('clinuip')
 
         $scope.clear = function () {
             $scope.query = "";
+			$('.queryTypehead').typeahead('val', '');
             $scope.chosenGender = null;
             $scope.queryLabel = "";
             $scope.patientFilter = null;
@@ -45,27 +46,29 @@ angular.module('clinuip')
             {y: 0,  label: "61-100", id:"age100"}
         ];
 
-        function loadPatientsPercentage() {
+        function loadPatientsPercentage(cb) {
             Patients.get({ percentage : true, query: $scope.query }, function (data) {
                 $scope.countMaleFemale.female = data.female;
                 $scope.countMaleFemale.male = data.male;
                 chart.render();
+				if (cb) cb();
             });
         }
 
-        function loadPatientsAge() {
+        function loadPatientsAge(cb) {
             Patients.get({ agecount : true, query: $scope.query }, function (data) {
                 ageData[0].y = data.age30;
                 ageData[1].y = data.age60;
                 ageData[2].y = data.age100;
                 chartAge.render();
+				if (cb) cb();
             });
         }
 
         loadPatientsPercentage();
         loadPatientsAge();
 
-        function loadPatients() {
+        function loadPatients(cb) {
             $scope.patients = [];
 
             var query = $scope.query,
@@ -99,6 +102,7 @@ angular.module('clinuip')
 
                 Patients.query(apiQuery, function (data) {
                     $scope.patients = data;
+					if (cb) cb();
                 });
             }
         }
@@ -344,6 +348,7 @@ angular.module('clinuip')
                 if (event.keyCode === 13) {
                     $scope.$apply (function() {
                         addNewNoteLine(that.value);
+						notesTypehead.typeahead('val', '');
                     });
                 }
             });
@@ -351,6 +356,7 @@ angular.module('clinuip')
             notesTypehead.on('typeahead:selected', function(event, object, dataset) {
                 $scope.$apply (function() {
                     addNewNoteLine(object.value);
+					notesTypehead.typeahead('val', '');
                 });
             });
         }
@@ -482,11 +488,11 @@ angular.module('clinuip')
         });
 
         $scope.search = function () {
-            $scope.chosenGender = null;
-            $scope.age = null;
-            loadPatients();
-            loadPatientsPercentage();
-            loadPatientsAge();
+			$scope.chosenGender = null;
+			$scope.age = null;	
+			loadPatients();
+			loadPatientsPercentage();
+			loadPatientsAge();
         };
 
         $('#myTabs a').click(function (e) {
