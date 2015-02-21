@@ -59,20 +59,3 @@ Folder and file structure
 License
 -----
 This work is copyright of Frectal Ltd
-
-----
-[
-  '{{repeat(1000)}}',
-  {
-    name: '{{firstName()}} {{surname()}}',
-    sex: '{{gender()}}',
-    identifier: '{{guid()}}',
-    author: '{{firstName()}} {{surname()}}',
-    dob: function (tags) {
-      var start = new Date(1945, 0, 1),
-          end = new Date(2010, 0, 1);
-
-      return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-    }
-  }
-]
