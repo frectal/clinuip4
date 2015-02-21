@@ -1,4 +1,4 @@
-ClinUiP 2
+ClinUiP 3
 ===
 
 This is Node.js + MongoDB application. You need to have instaled Node.js and MongoDB on yout PC to be able to run application.
