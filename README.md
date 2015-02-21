@@ -10,9 +10,8 @@ Setup
 mkdir installFolder
 cd installFolder
 git clone git@bitbucket.org:frectal/clinuip3_mean.git
-OR
+(OR)
 git clone https://frectal@bitbucket.org/frectal/clinuip3_mean.git
-then
 cd clinuip3_mean
 ```
 - install Node.js modules
