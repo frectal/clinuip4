@@ -56,7 +56,11 @@ Folder and file structure
   └── README.md
 
 ```
+License
+-----
+This work is copyright of Frectal Ltd
 
+----
 [
   '{{repeat(1000)}}',
   {
