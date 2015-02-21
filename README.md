@@ -1,7 +1,7 @@
-ClinUiP 3
+ClinUiP 3.3
 ===
 
-This is Node.js + MongoDB application. You need to have instaled Node.js and MongoDB on yout PC to be able to run application.
+This is Node.js + MongoDB application. You need to have installed Node.js and MongoDB on yout PC to be able to run application.
 
 Setup
 --
