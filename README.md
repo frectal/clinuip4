@@ -1,12 +1,37 @@
 ClinUiP 3.3
 ===
 Clinical Overview
+-----
 This is a lightweight but powerful Clinically Oriented Application based on earlier work called ClinUiP, Clinical UI Patterns.
 
+Primarily..it exposes 3 key levels of a typical healthcare application.
+
+1) Research & Reporting... the pie and bar charts show at a glance some key aspects , eg total number of Male/Female Patients, or patients by Age. A search in the search field refines that and clicking on the charts further refines the search to return the relevant patient cohort list.
+
+2) Management of Cohort .. the middle table shows at a glance who are those individuals who make up a specific cohort of patients, eg All Male Patients, All Age 31-60 etc, All that fit such a search criteria. A simple filter alongside that table enables further quick filtering. A click on any row then makes the individual record available for a patient.
+
+3) Patient Care.. the right table shows the patients record. The entries that make up the record are groups of "clinical statements" captured at specific points in time, with an encounter number also linked. Data Entry can be made with/without a template.
+
+
+It offers 2 key modal forms to allow data capture
+
+1) Free form - here by using "type ahead" the user can quickly record preformed clinical statements for a particular event + free text to balance the structure/narrative elements.
+
+2) Templated- here by using "tags" we filter those clinical statements that may be most relevant for this scenario, which then allows rapid data entry + free text entry to balance the structured /narrative elements.
+
+Any data entered can be used to power a search at a later time.
+
+
+
+Secondly it exposes a simple way to create and maintain a clinical content library..
+
+The Content is grouped by Headings and can be tagged.
+This content is captured in the form of common clinical statements.
+This content is then available for use within the Healthcare application, either in free form and with/without leveraging the tags.
 
 
 Technical Overview & Install
-
+---
 This is Javascript application using the MEAN stack including Node.js + MongoDB. You need to have installed Node.js and MongoDB on your PC/server to be able to run application.
 
 Setup
