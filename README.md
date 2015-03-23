@@ -2,7 +2,7 @@ ClinUiP 3.3
 ===
 Clinical Overview
 -----
-This is a lightweight but powerful Clinically Oriented Application based on earlier work called ClinUiP, Clinical UI Patterns.
+This is a lightweight but powerful Clinically Oriented Application based on earlier work called [Clin Ui P, Clinical UI Patterns](http://clinuip.wordpress.com/).
 
 Primarily..it exposes 3 key levels of a typical healthcare application.
 
