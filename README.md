@@ -30,6 +30,13 @@ This content is captured in the form of common clinical statements.
 This content is then available for use within the Healthcare application, either in free form and with/without leveraging the tags.
 
 
+Screenshots
+---
+Overview of clinical application
+
+![OverviewPic.jpg](https://bitbucket.org/repo/qMrRdp/images/185708717-OverviewPic.jpg)
+
+
 Technical Overview & Install
 ---
 This is Javascript application using the MEAN stack including Node.js + MongoDB. You need to have installed Node.js and MongoDB on your PC/server to be able to run application.
