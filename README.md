@@ -1,4 +1,4 @@
-ClinUiP 3.3
+ClinUiP 0.4
 ===
 Clinical Overview
 -----
@@ -34,7 +34,7 @@ Screenshots
 ---
 Overview of clinical application
 
-![OverviewPic.jpg](https://bitbucket.org/repo/qMrRdp/images/185708717-OverviewPic.jpg)
+![OverviewPic.jpg]()
 
 
 Data Entry Modal
