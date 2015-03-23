@@ -1,7 +1,13 @@
 ClinUiP 3.3
 ===
+Clinical Overview
+This is a lightweight but powerful Clinically Oriented Application based on earlier work called ClinUiP, Clinical UI Patterns.
 
-This is Node.js + MongoDB application. You need to have installed Node.js and MongoDB on yout PC to be able to run application.
+
+
+Technical Overview & Install
+
+This is Javascript application using the MEAN stack including Node.js + MongoDB. You need to have installed Node.js and MongoDB on your PC/server to be able to run application.
 
 Setup
 --
