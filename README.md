@@ -34,16 +34,17 @@ Screenshots
 ---
 Overview of clinical application
 
-![OverviewPic.jpg]()
+
+![Overview Screenshot](/https://clinuip.files.wordpress.com/2015/03/overviewpic.jpg)
 
 
 Data Entry Modal
 
-![OverviewPic_DataEntry.jpg](https://bitbucket.org/repo/qMrRdp/images/3511412551-OverviewPic_DataEntry.jpg)
+![Data Entry Modal screenshot](/https://clinuip.files.wordpress.com/2015/03/overviewpic_dataentry.jpg)
 
 Overview of Clinical Content admin
 
-![OverviewPic_ClinicalContent.jpg](https://bitbucket.org/repo/qMrRdp/images/661535907-OverviewPic_ClinicalContent.jpg)
+![Clinical Content Overview](/https://clinuip.files.wordpress.com/2015/03/overviewpic_clinicalcontent.jpg)
 
 
 Technical Overview & Install
