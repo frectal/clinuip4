@@ -37,6 +37,15 @@ Overview of clinical application
 ![OverviewPic.jpg](https://bitbucket.org/repo/qMrRdp/images/185708717-OverviewPic.jpg)
 
 
+Data Entry Modal
+
+![OverviewPic_DataEntry.jpg](https://bitbucket.org/repo/qMrRdp/images/3511412551-OverviewPic_DataEntry.jpg)
+
+Overview of Clinical Content admin
+
+![OverviewPic_ClinicalContent.jpg](https://bitbucket.org/repo/qMrRdp/images/661535907-OverviewPic_ClinicalContent.jpg)
+
+
 Technical Overview & Install
 ---
 This is Javascript application using the MEAN stack including Node.js + MongoDB. You need to have installed Node.js and MongoDB on your PC/server to be able to run application.
