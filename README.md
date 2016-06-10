@@ -38,9 +38,14 @@ Overview of clinical application
 ![Overview Screenshot](https://clinuip.files.wordpress.com/2015/03/overviewpic.jpg)
 
 
-Data Entry Modal
+Data Entry Modal - this allows for data entry from all across the clinical content
 
 ![Data Entry Modal screenshot](https://clinuip.files.wordpress.com/2015/03/overviewpic_dataentry.jpg)
+
+Data Entry Modal by Template - this allows for data entry- filtered by a tag (such as XM for Examination)
+
+![Data Entry by Template - Modal screenshot](https://clinuip.files.wordpress.com/2016/06/clinuip4_dataentry_bytemplate2.png)
+
 
 Overview of Clinical Content admin
 
