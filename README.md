@@ -46,6 +46,9 @@ Data Entry Modal by Template - this allows for data entry- filtered by a tag (su
 
 ![Data Entry by Template - Modal screenshot](https://clinuip.files.wordpress.com/2016/06/clinuip4_dataentry_bytemplate2.png)
 
+.
+
+
 
 Overview of Clinical Content admin
 
