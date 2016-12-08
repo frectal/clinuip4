@@ -77,6 +77,12 @@ npm install
 node index.js
 ```
 
+- keep application running on NodeJS "forever" as per https://github.com/foreverjs/forever
+```sh
+forever start index.js
+```
+
+
 Folder and file structure
 ----
 
