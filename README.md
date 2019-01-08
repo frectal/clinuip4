@@ -70,7 +70,8 @@ cd clinuip3_mean
 ```
 - install Node.js modules
 ```sh
-npm install
+sudo apt update
+sudo npm install
 ```
 - start application
 ```sh
